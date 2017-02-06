@@ -1,0 +1,4 @@
+yelp/
+*.pyc
+constant.py
+.DS_Store
