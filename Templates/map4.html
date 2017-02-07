@@ -32,14 +32,14 @@
     border-radius: 3px;
 }
 
-#clear {
+#get_button {
     position: absolute;
     top: 93%;
     left: 50%;
     z-index: 1;
 }
 
-#get_button {
+#clear {
     position: absolute;
     top: 93%;
     left: 30%;
@@ -193,25 +193,25 @@ function remove () {
 function passToServer(event) {
     event.preventDefault();
     coordinates = geojson.features[geojson.features.length -1].geometry.coordinates;
-    // console.log("this is coordinates")
-    // console.log(coordinates)
-    // coordinates_list = []
-    // for (var i=0; i < coordinates.length; i++) {
-    //     console.log(coordinates[i])
-    //     coordinates_list.push(coordinates_list[i])
-    // }
-    // console.log("this is the list")
-    // console.log(coordinates_list)
-    var parameter = "{features: coordinates}";
-    var parameter = "sdfds"
+    
+    coordinates_list = []
+    for (var i=0; i < coordinates.length; i++) {
+        
+        coordinates_list.push({"lat": coordinates[i][1], "lng": coordinates[i][0]})
+    }
+
+    var parameter = {
+        'data': JSON.stringify(coordinates_list)
+    };
+    
     console.log(parameter);
     $.post("/", 
         parameter,
         function(data, status){
         console.log("data: "+ data.result);
-        console.log("status: "+status);
-        var test = parameter;
-        console.log(test)
+        console.log("status: "+ status);
+        // var test = parameter;
+        // console.log(test)
         // return test;
     })
 }

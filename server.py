@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from constant import TOKEN, APP_SECRETE
 from flask_debugtoolbar import DebugToolbarExtension
-
+import json
 
 app = Flask(__name__)
 
@@ -16,10 +16,11 @@ def home():
 @app.route("/", methods=['POST'])
 def dis_restaurants():
     """Display the restaurants within the polygon region"""
-    print "expecting array of array"
-    # raise Exception 
-    print request.form.get('features')
-    # raise Exception 
+
+    data = json.loads(request.form.get("data"))
+
+    
+    
     return jsonify({"result":"the result"})
     # polygon_points = re /quest.form.get("")
 
