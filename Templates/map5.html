@@ -49,6 +49,10 @@
 <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.js'></script>
 <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.css' type='text/css' />
 
+
+
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
 <div id='map'>
     <div id='distance' class='distance-container'></div>
     <input type=button name="clear" value="Clear Drawing" id="clear">
@@ -57,10 +61,19 @@
     </form>
 </div>
 
-
 <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
+
 <script src="http://code.jquery.com/jquery.js"></script>
+
+<script src="static/mapbox-gl-draw.js"></script>
+<link href='static/mapbox-gl-draw.css' rel='stylesheet' />
+
+
+   
+
+
 <script>
+
 mapboxgl.accessToken = '{{token}}';
 var map = new mapboxgl.Map({
     container: 'map',
@@ -68,12 +81,26 @@ var map = new mapboxgl.Map({
     center: [-115.172,36.155],//[-122.4, 37.8]
     zoom: 10
 });
+
+
+
+// var paw = 
+// map.addControl(paw, "top-left")
+
+
+
+
 var geocoder = new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken
-});
-map.addControl(geocoder, "top-right");
-map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
-map.addControl(new mapboxgl.GeolocateControl(), 'buttom-right');
+        accessToken: mapboxgl.accessToken
+    });
+map.addControl(geocoder, 'top-right');
+map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+// map.addControl(geocoder);
+// map.addControl(new mapboxgl.NavigationControl());
+
+var d = mapboxgl.Draw();
+d.addTo(map);
+// map.addControl(Draw);
 
 var button = document.getElementById('clear')
 
@@ -94,7 +121,7 @@ var linestring = {
     }
 };
 
-map.on('load', function() {
+function loading() {
     map.addSource('geojson', {
         "type": "geojson",
         "data": geojson
@@ -129,10 +156,6 @@ map.on('load', function() {
     map.on('click', function(e) {
         var features = map.queryRenderedFeatures(e.point, { layers: ['measure-points'] });
 
-        // Remove the linestring from the group
-        // So we can redraw it based on the points collection
-        // long = geojson.features[0].geometry.coordinates[0]
-        // lat = geojson.features[0].geometry.coordinates[1]
         if (geojson.features.length > 1 ) geojson.features.pop();
 
         // Clear the Distance container to populate it with a new value
@@ -169,22 +192,25 @@ map.on('load', function() {
             geojson.features.push(linestring);
 
             // Populate the distanceContainer with total distance
-            var value = document.createElement('pre');
-            value.textContent = 'Total distance: ' + turf.lineDistance(linestring).toLocaleString() + 'km';
-            distanceContainer.appendChild(value);
+            // var value = document.createElement('pre');
+            // value.textContent = 'Total distance: ' + turf.lineDistance(linestring).toLocaleString() + 'km';
+            // distanceContainer.appendChild(value);
         }
 
         map.getSource('geojson').setData(geojson);
     });
-});
+}
+
+map.on('load', loading );
 
 
-map.on('mousemove', function (e) {
-    var features = map.queryRenderedFeatures(e.point, { layers: ['measure-points'] });
-    // UI indicator for clicking/hovering a point on the map
-    map.getCanvas().style.cursor = (features.length) ? 'pointer' : 'crosshair';
-});
+// map.on('mousemove', function (e) {
+//     var features = map.queryRenderedFeatures(e.point, { layers: ['measure-points'] });
+//     // UI indicator for clicking/hovering a point on the map
+//     map.getCanvas().style.cursor = (features.length) ? 'pointer' : 'crosshair';
+// });
 function remove () {
+    $('#get_button').prop('disabled', false)
     geojson.features = [];
     // $.get("/", function (data) {alert("good")});
     window.location = "/"
@@ -192,6 +218,8 @@ function remove () {
 
 function passToServer(event) {
     event.preventDefault();
+    $('#get_button').prop('disabled', true)
+
     coordinates = geojson.features[geojson.features.length -1].geometry.coordinates;
     
     coordinates_list = []
@@ -242,12 +270,16 @@ function passToServer(event) {
     })
 }
 
+
+
+
 $('#clear').on('click', remove)
 
 $('#get_button').on('click', passToServer)
 
 
 </script>
+
 </body>
 <a href="http://www.freepik.com/free-photos-vectors/background"></a>
 </html>

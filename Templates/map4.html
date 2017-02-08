@@ -49,6 +49,10 @@
 <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.js'></script>
 <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.css' type='text/css' />
 
+
+
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
 <div id='map'>
     <div id='distance' class='distance-container'></div>
     <input type=button name="clear" value="Clear Drawing" id="clear">
@@ -57,10 +61,15 @@
     </form>
 </div>
 
-
 <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
+
 <script src="http://code.jquery.com/jquery.js"></script>
+
+<script src="static/mapbox-gl-draw.js"></script>
+<link href='static/mapbox-gl-draw.css' rel='stylesheet' />
+
 <script>
+
 mapboxgl.accessToken = '{{token}}';
 var map = new mapboxgl.Map({
     container: 'map',
@@ -68,11 +77,16 @@ var map = new mapboxgl.Map({
     center: [-115.172,36.155],//[-122.4, 37.8]
     zoom: 10
 });
+
+
 var geocoder = new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken
-});
-map.addControl(geocoder, "top-right");
-map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
+        accessToken: mapboxgl.accessToken
+    });
+map.addControl(geocoder, 'top-right');
+map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+
+var d = mapboxgl.Draw();
+d.addTo(map);
 
 var button = document.getElementById('clear')
 
@@ -125,66 +139,58 @@ function loading() {
         filter: ['in', '$type', 'LineString']
     });
 
-    map.on('click', function(e) {
-        var features = map.queryRenderedFeatures(e.point, { layers: ['measure-points'] });
+    // map.on('click', function(e) {
+    //     var features = map.queryRenderedFeatures(e.point, { layers: ['measure-points'] });
 
-        // Remove the linestring from the group
-        // So we can redraw it based on the points collection
-        // long = geojson.features[0].geometry.coordinates[0]
-        // lat = geojson.features[0].geometry.coordinates[1]
-        if (geojson.features.length > 1 ) geojson.features.pop();
+    //     if (geojson.features.length > 1 ) geojson.features.pop();
 
-        // Clear the Distance container to populate it with a new value
-        distanceContainer.innerHTML = '';
+    //     // Clear the Distance container to populate it with a new value
+    //     distanceContainer.innerHTML = '';
 
-        // If a feature was clicked, remove it from the map
-        // if (features.length) {
-        //     var id = features[0].properties.id;
-        //     geojson.features = geojson.features.filter(function(point) {
-        //         return point.properties.id !== id;
-        //     });
-        // } else {
-            var point = {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": 
-                        [e.lngLat.lng, e.lngLat.lat]
+    //     // If a feature was clicked, remove it from the map
+    //     // if (features.length) {
+    //     //     var id = features[0].properties.id;
+    //     //     geojson.features = geojson.features.filter(function(point) {
+    //     //         return point.properties.id !== id;
+    //     //     });
+    //     // } else {
+    //         var point = {
+    //             "type": "Feature",
+    //             "geometry": {
+    //                 "type": "Point",
+    //                 "coordinates": 
+    //                     [e.lngLat.lng, e.lngLat.lat]
                     
-                },
-                "properties": {
-                    "id": String(new Date().getTime())
-                }
-            };
+    //             },
+    //             "properties": {
+    //                 "id": String(new Date().getTime())
+    //             }
+    //         };
 
-            geojson.features.push(point);
-        // }
+    //         geojson.features.push(point);
+    //     // }
 
-        if (geojson.features.length > 1) {
-            linestring.geometry.coordinates = geojson.features.map(function(point) {
-                return point.geometry.coordinates;
-            });
+    //     if (geojson.features.length > 1) {
+    //         linestring.geometry.coordinates = geojson.features.map(function(point) {
+    //             return point.geometry.coordinates;
+    //         });
 
-            geojson.features.push(linestring);
+    //         geojson.features.push(linestring);
 
-            // Populate the distanceContainer with total distance
-            var value = document.createElement('pre');
-            value.textContent = 'Total distance: ' + turf.lineDistance(linestring).toLocaleString() + 'km';
-            distanceContainer.appendChild(value);
-        }
+    //         // Populate the distanceContainer with total distance
+    //         // var value = document.createElement('pre');
+    //         // value.textContent = 'Total distance: ' + turf.lineDistance(linestring).toLocaleString() + 'km';
+    //         // distanceContainer.appendChild(value);
+    //     }
 
-        map.getSource('geojson').setData(geojson);
-    });
+    //     map.getSource('geojson').setData(geojson);
+    // });
 }
 
 map.on('load', loading );
 
 
-// map.on('mousemove', function (e) {
-//     var features = map.queryRenderedFeatures(e.point, { layers: ['measure-points'] });
-//     // UI indicator for clicking/hovering a point on the map
-//     map.getCanvas().style.cursor = (features.length) ? 'pointer' : 'crosshair';
-// });
+
 function remove () {
     $('#get_button').prop('disabled', false)
     geojson.features = [];
@@ -246,12 +252,16 @@ function passToServer(event) {
     })
 }
 
-$('#clear').on('click', remove)
-
-$('#get_button').on('click', passToServer)
 
 
+
+$('#clear').on('click', remove);
+
+$('#get_button').on('click', passToServer);
+
+$('.mapbox-gl-draw_point').hide(); //hiding the draw points
 </script>
+
 </body>
 <a href="http://www.freepik.com/free-photos-vectors/background"></a>
 </html>
