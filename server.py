@@ -27,15 +27,11 @@ def dis_restaurants():
             line = line.rstrip().split(',')
             x = float(line[1])
             y = float(line[0])
-            print pointInPolygon(len(polyY), polyY, polyX, x, y )
             if pointInPolygon(len(polyY), polyY, polyX, x, y ):
-                drawpoints.append((x,y))
-        print drawpoints
+                drawpoints.append([x,y])
 
-    
-    
-    return jsonify({"result":"the result"})
-    # polygon_points = re /quest.form.get("")
+    return jsonify({"result":drawpoints})
+
 
 
 if __name__ == "__main__":
