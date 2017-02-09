@@ -14,14 +14,14 @@
 <body>
 
 <style>
-.distance-container {
+/*.distance-container {
     position: absolute;
     top: 10px;
     left: 10px;
     z-index: 1;
-}
+}*/
 
-.distance-container > * {
+/*.distance-container > * {
     background-color: rgba(0, 0, 0, 0.5);
     color: #fff;
     font-size: 11px;
@@ -31,7 +31,7 @@
     padding: 5px 10px;
     border-radius: 3px;
 }
-
+*/
 #get_button {
     position: absolute;
     top: 93%;
@@ -87,7 +87,6 @@ map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
 var d = mapboxgl.Draw();
 d.addTo(map);
-console.log(d.getAll())
 
 var button = document.getElementById('clear')
 
@@ -198,69 +197,83 @@ function remove () {
     // $.get("/", function (data) {alert("good")});
     window.location = "/"
 }
-var source_id = ""
+
+
+var source_ids = []
 function passToServer(event) {
-    event.preventDefault();
-    // $('#get_button').prop('disabled', true)
-    coordinates = d.getAll().features[0].geometry.coordinates
-    // layer.remove()
-    // coordinates = geojson.features[geojson.features.length -1].geometry.coordinates;
-    
-    coordinates_list = []
-    for (var i=0; i < coordinates.length; i++) {
-        
-        coordinates_list.push({"lat": coordinates[i][1], "lng": coordinates[i][0]})
-    }
-
-    var parameter = {
-        'data': JSON.stringify(coordinates_list)
-    };
-    var seconds = new Date().getTime()/1000
-    if (source_id != '') {
-        map.removeLayer(source_id.toString())
-    }
-
-    source_id = seconds
-    $.post("/", 
-        parameter,
-        function(response){
-            points = []
-            for(var i=0; i<response.result.length; i++) {
-                one_point = {
-                            "type": "Feature",
-                            "geometry": {
-                            "type": "Point",
-                            "coordinates": response.result[i]
-                            },
-                            "properties": {
-                            "icon": "restaurant",
-                            "marker-color": '#63b6e5'
-                        }
-                    }
-                points.push(one_point) }
-        layer_with_rest = map.addLayer({
-        "id": seconds.toString(),
-        "type": "symbol",
-        "source": {
-            "type": "geojson",
-            "data": {
-                "type": "FeatureCollection",
-                "features": points
-            }
-        },
-        "layout": {
-            "icon-image": "{icon}-11",
-            "text-field": "{title}",
-            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-            "text-offset": [0, 0.6],
-            "text-anchor": "top"
+    event.preventDefault(); 
+    var points = [];
+    for (var j=0; j < d.getAll().features.length; j++) {
+        if (d.getAll().features[j].geometry.coordinates.length == 1) {
+             coordinates = d.getAll().features[j].geometry.coordinates[0]//for shape polygon
         }
-    });
-              
-    })
+        else {
+            coordinates = d.getAll().features[j].geometry.coordinates //for line polygon
+        }
+        coordinates_list = []
+        for (var i=0; i < coordinates.length; i++) {
+            coordinates_list.push({"lat": coordinates[i][1], "lng": coordinates[i][0]})
+        }
+        var parameter = {
+            'data': JSON.stringify(coordinates_list)
+        };
+
+        $.post("/", 
+            parameter,
+            function(response){
+                // console.log(response)
+                for(var i=0; i<response.result.length; i++) {
+                    one_point = {
+                                "type": "Feature",
+                                "geometry": {
+                                "type": "Point",
+                                "coordinates": response.result[i]//.get('latlng')
+                                },
+                                "properties": {
+                                "icon": "restaurant",
+                                "marker-color": '#63b6e5'
+                            }
+                        }
+                    points.push(one_point) }
+                // console.log(points)
+                var source_id = new Date().getTime()
+                source_id = source_id.toString();
+                // console.log(source_ids)
+                // console.log(typeof source_ids[0])
+                if (source_ids != []) {
+                    for (var n=0; n<source_ids.length; n++) {
+                        // console.log(source_ids[n])
+                        map.removeLayer(source_ids[n])
+                        source_ids.pop(source_ids[n])
+                    }
+                    
+                }
+                source_ids.push(source_id)
+                layer_with_rest = map.addLayer({
+                    "id": source_id,
+                    "type": "symbol",
+                    "source": {
+                        "type": "geojson",
+                        "data": {
+                            "type": "FeatureCollection",
+                            "features": points
+                        }
+                    },
+                    "layout": {
+                        "icon-image": "{icon}-11",
+                        "text-field": "{title}",
+                        "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                        "text-offset": [0, 0.6],
+                        "text-anchor": "top"
+                    }
+                });
+                }
+            )
+            
+        
+        }
+  
 }
-
-
 
 
 $('#clear').on('click', remove);

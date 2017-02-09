@@ -19,6 +19,7 @@ def dis_restaurants():
     """Display the restaurants within the polygon region"""
 
     data = json.loads(request.form.get("data"))
+    # print data
     polyY = [float(lat.get('lat')) for lat in data]
     polyX = [float(lng.get('lng')) for lng in data]
     drawpoints = []
@@ -29,6 +30,23 @@ def dis_restaurants():
             y = float(line[0])
             if pointInPolygon(len(polyY), polyY, polyX, x, y ):
                 drawpoints.append([x,y])
+            # line = line.rstrip().split(',')
+            # print line
+            # x = float(line[2])
+            # y = float(line[1])
+            # if pointInPolygon(len(polyY), polyY, polyX, x, y ):
+            #     business_id = line[0]
+            #     name = line[6]
+            #     rating = line[3]
+            #     review_count = line[4]
+            #     category = line[5]
+            #     drawpoints.append({'business_id': business_id,
+            #                        'name': name,
+            #                        'latlng': [x,y],
+            #                        'rating': rating,
+            #                        'review_count': review_count,
+            #                        'category': category})
+
 
     return jsonify({"result":drawpoints})
 
