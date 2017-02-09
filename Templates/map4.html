@@ -87,6 +87,7 @@ map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
 var d = mapboxgl.Draw();
 d.addTo(map);
+console.log(d.getAll())
 
 var button = document.getElementById('clear')
 
@@ -107,37 +108,37 @@ var linestring = {
     }
 };
 
-function loading() {
-    map.addSource('geojson', {
-        "type": "geojson",
-        "data": geojson
-    });
+// function loading() {
+//     map.addSource('geojson', {
+//         "type": "geojson",
+//         "data": geojson
+//     });
 
-    // Add styles to the map
-    map.addLayer({
-        id: 'measure-points',
-        type: 'circle',
-        source: 'geojson',
-        paint: {
-            'circle-radius': 5,
-            'circle-color': '#000'
-        },
-        filter: ['in', '$type', 'Point']
-    });
-    map.addLayer({
-        id: 'measure-lines',
-        type: 'line',
-        source: 'geojson',
-        layout: {
-            'line-cap': 'round',
-            'line-join': 'round'
-        },
-        paint: {
-            'line-color': '#000',
-            'line-width': 2.5
-        },
-        filter: ['in', '$type', 'LineString']
-    });
+//     // Add styles to the map
+//     map.addLayer({
+//         id: 'measure-points',
+//         type: 'circle',
+//         source: 'geojson',
+//         paint: {
+//             'circle-radius': 5,
+//             'circle-color': '#000'
+//         },
+//         filter: ['in', '$type', 'Point']
+//     });
+//     map.addLayer({
+//         id: 'measure-lines',
+//         type: 'line',
+//         source: 'geojson',
+//         layout: {
+//             'line-cap': 'round',
+//             'line-join': 'round'
+//         },
+//         paint: {
+//             'line-color': '#000',
+//             'line-width': 2.5
+//         },
+//         filter: ['in', '$type', 'LineString']
+//     });
 
     // map.on('click', function(e) {
     //     var features = map.queryRenderedFeatures(e.point, { layers: ['measure-points'] });
@@ -185,9 +186,9 @@ function loading() {
 
     //     map.getSource('geojson').setData(geojson);
     // });
-}
+// }
 
-map.on('load', loading );
+// map.on('load', loading );
 
 
 
@@ -197,12 +198,13 @@ function remove () {
     // $.get("/", function (data) {alert("good")});
     window.location = "/"
 }
-
+var source_id = ""
 function passToServer(event) {
     event.preventDefault();
-    $('#get_button').prop('disabled', true)
-
-    coordinates = geojson.features[geojson.features.length -1].geometry.coordinates;
+    // $('#get_button').prop('disabled', true)
+    coordinates = d.getAll().features[0].geometry.coordinates
+    // layer.remove()
+    // coordinates = geojson.features[geojson.features.length -1].geometry.coordinates;
     
     coordinates_list = []
     for (var i=0; i < coordinates.length; i++) {
@@ -213,6 +215,12 @@ function passToServer(event) {
     var parameter = {
         'data': JSON.stringify(coordinates_list)
     };
+    var seconds = new Date().getTime()/1000
+    if (source_id != '') {
+        map.removeLayer(source_id.toString())
+    }
+
+    source_id = seconds
     $.post("/", 
         parameter,
         function(response){
@@ -230,8 +238,8 @@ function passToServer(event) {
                         }
                     }
                 points.push(one_point) }
-        map.addLayer({
-        "id": "points",
+        layer_with_rest = map.addLayer({
+        "id": seconds.toString(),
         "type": "symbol",
         "source": {
             "type": "geojson",
