@@ -1611,7 +1611,7 @@
                 "line-join": "round"
             },
             paint: {
-                "line-color": "#FF9800",
+                "line-color": "#5093EC",
                 "line-dasharray": [.2, 2],
                 "line-width": 4
             },
@@ -1623,7 +1623,7 @@
                 ["==", "$type", "Polygon"]
             ],
             paint: {
-                "fill-color": "#FF9800",
+                "fill-color": "#19992D",
                 "fill-opacity": .25
             },
             interactive: !0
@@ -1652,7 +1652,7 @@
             paint: {
                 "circle-radius": 7,
                 "circle-opacity": .65,
-                "circle-color": "#fff"
+                "circle-color": "#191F99"
             },
             interactive: !0
         }, {
@@ -1664,7 +1664,7 @@
             paint: {
                 "circle-radius": 6,
                 "circle-opacity": .65,
-                "circle-color": "#FF9800"
+                "circle-color": "#191F99"
             },
             interactive: !0
         }, {
@@ -1674,8 +1674,8 @@
                 ["==", "$type", "Polygon"]
             ],
             paint: {
-                "fill-color": "#03A9F4",
-                "fill-outline-color": "#03A9F4",
+                "fill-color": "",
+                "fill-outline-color": "",
                 "fill-opacity": .25
             },
             interactive: !0
@@ -1730,7 +1730,7 @@
             ],
             paint: {
                 "circle-radius": 7,
-                "circle-color": "#EF6C00"
+                "circle-color": "#441999"
             },
             interactive: !0
         }, {
@@ -1754,7 +1754,7 @@
             ],
             paint: {
                 "circle-radius": 7,
-                "circle-color": "#FF9800"
+                "circle-color": "#441999"
             },
             interactive: !0
         }, {
@@ -1778,7 +1778,7 @@
             ],
             paint: {
                 "circle-radius": 7,
-                "circle-color": "#03A9F4"
+                "circle-color": "#441999"
             },
             interactive: !0
         }]

@@ -11,6 +11,15 @@ def pointInPolygon(polySides, polyY,  polyX, x, y):
 
     return oddNodes; 
 
+# from shapely.geometry import Polygon, Point
+
+# def poly_contains(polyY, polyX, 
+#                   longitude,
+#                   latitude):
+#     poly = Polygon((zip(polyX, polyY)))
+#     a =poly.boundary.contains((latitude,longitude))
+#     return a
+
 
 
 
