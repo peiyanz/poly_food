@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 from constant import TOKEN, APP_SECRETE
 from flask_debugtoolbar import DebugToolbarExtension
 import json
+from yelp_api import rectangle
 from data import rest_in_poly
 
 app = Flask(__name__)
@@ -39,8 +40,17 @@ def dis_restaurants():
     polyY = [float(lat.get('lat')) for lat in data]
     polyX = [float(lng.get('lng')) for lng in data]
     polySides = len(polyY)
+
+    # l2 = min(polyX)
+    # l1 = min(polyY)
+    # l4 = max(polyX)
+    # l3 = max(polyY)
+
+    # restaurants = rectangle(l1,l2,l3,l4)
+    # print restaurants
     info_json = rest_in_poly(polySides, polyY, polyX)
     return jsonify({"result":info_json})
+    # return
 
 if __name__ == "__main__":
     app.debug = True
