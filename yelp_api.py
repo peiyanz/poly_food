@@ -50,7 +50,7 @@ def rectangle(l1,l2,l3,l4):
     name = []
     for i in restaurants.get('businesses'):
         category.append(i.get("categories")[0][0] )
-        location.append(i.get("location").get('address')[0] + " " + i.get("location").get('city') + " " + i.get("location").get('state_code') + " " + i.get("location").get('postal_code'))
+        location.append(i.get('location').get("display_address"))
         longitude.append(i.get('location').get('coordinate').get('longitude'))
         latitude.append(i.get('location').get('coordinate').get('latitude'))
         rating.append(i.get('rating'))
