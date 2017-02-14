@@ -39,16 +39,16 @@ def dis_restaurants():
     data = json.loads(request.form.get("data"))
     polyY = [float(lat.get('lat')) for lat in data]
     polyX = [float(lng.get('lng')) for lng in data]
-    polySides = len(polyY)
+    # polySides = len(polyY)
 
-    # l2 = min(polyX)
-    # l1 = min(polyY)
-    # l4 = max(polyX)
-    # l3 = max(polyY)
+    l2 = min(polyX)
+    l1 = min(polyY)
+    l4 = max(polyX)
+    l3 = max(polyY)
 
-    # restaurants = rectangle(l1,l2,l3,l4)
+    rest_info = rectangle(l1,l2,l3,l4)
     # print restaurants
-    info_json = rest_in_poly(polySides, polyY, polyX)
+    info_json = rest_in_poly(polyY, polyX, rest_info)
     return jsonify({"result":info_json})
     # return
 
