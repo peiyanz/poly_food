@@ -56,8 +56,8 @@ mapboxgl.accessToken = '{{token}}';
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/light-v9',
-    center: [-115.172,36.155],//[-122.4, 37.8]
-    zoom: 10
+    center: [-122.431297,37.773972],//[-122.4, 37.8]
+    zoom: 12
 });
 
 
@@ -131,7 +131,8 @@ function passToServer(event) {
                                 },
                                 "properties": {
                                     title: "",
-                                    description: "<strong>"+data[0][i]["name"]+"</strong><p>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br><a href=\""+data[0][i]["url"]+"\" target='_blank'>link to restaurant</a></p>", //+ data[0][i]["name"].toString(),
+                                    description: "<strong>"+data[0][i]["name"]+"</strong><p>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br><a href=\""+data[0][i]["url"]+"\" target='_blank'>link to restaurant</a></p>", 
+                                    // "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
                                     "icon": "restaurant",
                                     "marker-color": '#000000'
                             }
