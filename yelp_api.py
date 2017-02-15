@@ -86,16 +86,16 @@ def rectangle(l1,l2,l3,l4):
         token_secret,
     )
 
-    def api_call(offset, limit):
-        return yelp.search(term='food',bounds=str(str(l1) + ','+ str(l2) +'|'+ str(l3) +','+ str(l4)),limit=40)
+    # def api_call(offset, limit):
+    #     return yelp.search(term='food',bounds=str(str(l1) + ','+ str(l2) +'|'+ str(l3) +','+ str(l4)),limit=40)
     
-    p = Process(target=api_call, args=(0,40))
-    p.start()
-    p.join()
+    # p = Process(target=api_call, args=(0,40))
+    # p.start()
+    # p.join()
 
 
-    # restaurants1 = yelp.search(term='food',bounds=str(str(l1) + ','+ str(l2) +'|'+ str(l3) +','+ str(l4)),limit=40)
-    # restaurants2 = yelp.search(term='food',bounds=str(str(l1) + ','+ str(l2) +'|'+ str(l3) +','+ str(l4)),offset=40, limit=40)
+    restaurants1 = yelp.search(term='food',bounds=str(str(l1) + ','+ str(l2) +'|'+ str(l3) +','+ str(l4)),limit=40)
+    restaurants2 = yelp.search(term='food',bounds=str(str(l1) + ','+ str(l2) +'|'+ str(l3) +','+ str(l4)),offset=40, limit=40)
     # restaurants3 = yelp.search(term='food',bounds=str(str(l1) + ','+ str(l2) +'|'+ str(l3) +','+ str(l4)),offset=80, limit=40)
     # restaurants4 = yelp.search(term='food',bounds=str(str(l1) + ','+ str(l2) +'|'+ str(l3) +','+ str(l4)),offset=120, limit=40)
     # restaurants5 = yelp.search(term='food',bounds=str(str(l1) + ','+ str(l2) +'|'+ str(l3) +','+ str(l4)),offset=160, limit=40)
