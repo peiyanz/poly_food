@@ -52,5 +52,9 @@ def rest_in_poly(polyY, polyX, rest_info):
     #                                 x.latitude),
     #                                 axis = 1) == True 
     #                     ]
+    info.to_json("info.json")
     info_json = info.to_json(orient = "records")
     return info_json
+
+
+
