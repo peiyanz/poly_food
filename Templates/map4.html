@@ -4,6 +4,8 @@
     <meta charset='utf-8' />
     <title></title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css' rel='stylesheet' />
     <style>
@@ -27,6 +29,13 @@
     left: 30%;
     z-index: 1;
 }
+
+#table {
+    position: absolute;
+    top: 85%;
+    left: 20%;
+
+}
 </style>
 <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.js'></script>
 <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.css' type='text/css' />
@@ -41,6 +50,27 @@
     <form action='/' method = 'POST'>
         <input type="submit" name="get_button" value="Get Restaurants" id="get_button">
     </form>
+</div>
+<div id='table'>
+    <table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Restaurant Name</th>
+      <th>Category</th>
+      <th>Stars</th>
+      <th>No. of Reviews</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <!-- <th scope="row">1</th> -->
+      <td>a</td>
+      <td>b</td>
+      <td>c</td>
+    </tr>
+  </tbody>
+</table>
 </div>
 
 <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
@@ -60,7 +90,7 @@ var map = new mapboxgl.Map({
     zoom: 12
 });
 
-
+map.doubleClickZoom.disable(); 
 var geocoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken
     });
@@ -191,9 +221,6 @@ function passToServer(event) {
 
 map.on('click', function (e) {
     var features = map.queryRenderedFeatures(e.point, { layers: source_ids });
-    // if (!features.length) {
-    //     return;
-    // }[source_ids[0]]
     console.log(features)
     var feature = features[0];
     // Populate the popup and set its coordinates
