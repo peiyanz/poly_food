@@ -2,10 +2,9 @@ from flask import Flask, render_template, request, jsonify
 from constant import TOKEN, APP_SECRETE
 from flask_debugtoolbar import DebugToolbarExtension
 import json
-from yelp_api import rectangle
+# from yelp_api import rectangle
 from yelp_api_v3 import api_call
 from data import rest_in_poly
-from geopy.distance import vincenty
 from math import sin, cos, sqrt, atan2, radians
 
 
@@ -50,10 +49,10 @@ def dis_restaurants():
     l1 = min(polyY)
     l4 = max(polyX)
     l3 = max(polyY)
-    print "point one"
-    print (l1, l2)
-    print "point two"
-    print (l3,l4)
+    # print "point one"
+    # print (l1, l2)
+    # print "point two"
+    # print (l3,l4)
 
     longitude = (l2+l4)/2
     latitude = (l1+l3)/2
@@ -78,16 +77,16 @@ def dis_restaurants():
 
     distance = R * c*1000
 
-    print("Result:", distance)
+    # print("Result:", distance)
 
 
     radius = int(distance/2)
     # radius = int(great_cicle((l1,l2),(l3,l4)).meters)
     if radius > 40000: #maximum range of the polygon
         radius = 39999
-    print longitude
-    print latitude
-    print radius
+    # print longitude
+    # print latitude
+    # print radius
 
     # rest_info = rectangle(l1,l2,l3,l4, offset)
     rest_info = api_call(latitude, longitude, radius, offset)

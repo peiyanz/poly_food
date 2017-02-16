@@ -18,7 +18,7 @@ yelp = Yelp(
 def api_call(latitude, longitude, radius, offset):
     time1 = time.time()
     # results = yelp.search(term='food', latitude=37.773972, longitude=-122.431297, radius=1000, offset=offset,limit=1)
-    results = yelp.search(term='food', latitude=latitude, longitude=longitude, radius=radius, offset=offset,limit=50)
+    results = yelp.search(term='restaurants', latitude=latitude, longitude=longitude, radius=radius, offset=offset,limit=50)
     if results.get("total") > 0:
         print "total"
         print results.get("total")

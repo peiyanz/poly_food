@@ -2,4 +2,3 @@ Flask==0.12
 Flask-DebugToolbar==0.10.1
 ezapi-yelp==0.3.1
 pandas==0.19.2
-geopy==1.11.0
