@@ -2,7 +2,7 @@ import json
 import pandas as pd
 import csv
 import io
-from is_within_polygon import point_in_poly, pointInPolygon
+from is_within_polygon import points_in_poly
 import time
 
 
@@ -39,7 +39,7 @@ def rest_in_poly(polyY, polyX, rest_info_api=None):
     #                             axis = 1) == True]
        
     x, y = rest_info.longitude, rest_info.latitude
-    info = rest_info[point_in_poly(polyY, polyX, x, y)]
+    info = rest_info.loc[points_in_poly(polyY, polyX, x, y)]
     # print info
 
     time2 = time.time()
