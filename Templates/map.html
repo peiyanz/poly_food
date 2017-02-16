@@ -1,70 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset='utf-8' />
-    <title></title>
-    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css' rel='stylesheet' />
-    <style>
-        body { margin:0; padding:0; }
-        #map { position:absolute; top:0; bottom:0; width:100%; }
-    </style>
+<meta charset=utf-8 />
+<title>Filter by marker type</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
+<style>
+  body { margin:0; padding:0; }
+  #map { position:absolute; top:0; bottom:0; width:100%; }
+</style>
 </head>
 <body>
 
-<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.js'></script>
-<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.css' type='text/css' />
+
 <style>
-#geocoder-container > div {
-    min-width:50%;
-    margin-left:25%;
-}
+.filter-ui {
+  background:#fff;
+  position:absolute;
+  top:10px;
+  right:10px;
+  z-index:100;
+  padding:10px;
+  border-radius:3px;
+  }
 </style>
+
+<nav id='filters' class='filter-ui'></nav>
 <div id='map'></div>
-
 <script>
-mapboxgl.accessToken = 'pk.eyJ1IjoicGVpeWFuMDgiLCJhIjoiY2l5bmdjNDhjMDA0azMzcGliZ2h0anAzdiJ9.ZGLw7lYBNkURtySzhZ9-Bw';
-var map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v9',
-    center: [-79.4512, 43.6568],
-    zoom: 13
-});
+L.mapbox.accessToken = 'pk.eyJ1IjoicGVpeWFuMDgiLCJhIjoiY2l5bmdjNDhjMDA0azMzcGliZ2h0anAzdiJ9.ZGLw7lYBNkURtySzhZ9-Bw';
+var map = L.mapbox.map('map', 'mapbox.dc-markers');
 
-var geocoder = new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken
-});
+// Find and store a variable reference to the list of filters.
+var filters = document.getElementById('filters');
 
-map.addControl(geocoder);
+// Wait until the marker layer is loaded in order to build a list of possible
+// types. If you are doing this with another featureLayer, you should change
+// map.featureLayer to the variable you have assigned to your featureLayer.
+map.featureLayer.on('ready', function() {
+  // Collect the types of symbols in this layer. you can also just
+  // hardcode an array of types if you know what you want to filter on,
+  // like var types = ['foo', 'bar'];
+  var typesObj = {}, types = [];
+  var features = map.featureLayer.getGeoJSON().features;
+  for (var i = 0; i < features.length; i++) {
+    typesObj[features[i].properties['marker-symbol']] = true;
+  }
+  for (var k in typesObj) types.push(k);
 
-// After the map style has loaded on the page, add a source layer and default
-// styling for a single point.
-map.on('load', function() {
-    map.addSource('single-point', {
-        "type": "geojson",
-        "data": {
-            "type": "FeatureCollection",
-            "features": []
-        }
+  var checkboxes = [];
+  // Create a filter interface.
+  for (var i = 0; i < types.length; i++) {
+    // Create an an input checkbox and label inside.
+    var item = filters.appendChild(document.createElement('div'));
+    var checkbox = item.appendChild(document.createElement('input'));
+    var label = item.appendChild(document.createElement('label'));
+    checkbox.type = 'checkbox';
+    checkbox.id = types[i];
+    checkbox.checked = true;
+    // create a label to the right of the checkbox with explanatory text
+    label.innerHTML = types[i];
+    label.setAttribute('for', types[i]);
+    // Whenever a person clicks on this checkbox, call the update().
+    checkbox.addEventListener('change', update);
+    checkboxes.push(checkbox);
+  }
+
+  // This function is called whenever someone clicks on a checkbox and changes
+  // the selection of markers to be displayed.
+  function update() {
+    var enabled = {};
+    // Run through each checkbox and record whether it is checked. If it is,
+    // add it to the object of types to display, otherwise do not.
+    for (var i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked) enabled[checkboxes[i].id] = true;
+    }
+    map.featureLayer.setFilter(function(feature) {
+      // If this symbol is in the list, return true. if not, return false.
+      // The 'in' operator in javascript does exactly that: given a string
+      // or number, it says if that is in a object.
+      // 2 in { 2: true } // true
+      // 2 in { } // false
+      return (feature.properties['marker-symbol'] in enabled);
     });
-
-    map.addLayer({
-        "id": "point",
-        "source": "single-point",
-        "type": "circle",
-        "paint": {
-            "circle-radius": 10,
-            "circle-color": "#007cbf"
-        }
-    });
-
-    // Listen for the `geocoder.input` event that is triggered when a user
-    // makes a selection and add a symbol that matches the result.
-    geocoder.on('result', function(ev) {
-        map.getSource('single-point').setData(ev.result.geometry);
-    });
+  }
 });
 </script>
+
+
 </body>
 </html>

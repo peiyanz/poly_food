@@ -1611,7 +1611,7 @@
                 "line-join": "round"
             },
             paint: {
-                "line-color": "#5093EC",
+                "line-color": "#8181F7",
                 "line-dasharray": [.2, 2],
                 "line-width": 4
             },
@@ -1623,7 +1623,7 @@
                 ["==", "$type", "Polygon"]
             ],
             paint: {
-                "fill-color": "#19992D",
+                "fill-color": "#819FF7",
                 "fill-opacity": .25
             },
             interactive: !0
