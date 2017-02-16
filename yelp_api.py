@@ -74,7 +74,7 @@ import time
 from yelp.api.v2 import Yelp
 from constant import consumer_key,consumer_secret,token,token_secret
 import pandas as pd 
-import multiprocessing
+
 
 def rectangle(l1,l2,l3,l4, offset):
     time1 = time.time()

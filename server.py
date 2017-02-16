@@ -3,7 +3,9 @@ from constant import TOKEN, APP_SECRETE
 from flask_debugtoolbar import DebugToolbarExtension
 import json
 from yelp_api import rectangle
+from yelp_api_v3 import api_call
 from data import rest_in_poly
+from geopy.distance import vincenty
 
 
 app = Flask(__name__)
@@ -47,16 +49,14 @@ def dis_restaurants():
     l1 = min(polyY)
     l4 = max(polyX)
     l3 = max(polyY)
+    longitude = (l2+l4)/2
+    latitude = (l1+l3)/2
+    radius = int(vincenty((l1,l2),(l3,l4)).meters)
 
-    rest_info = rectangle(l1,l2,l3,l4, offset)
+    # rest_info = rectangle(l1,l2,l3,l4, offset)
+    rest_info = api_call(latitude, longitude, radius, offset)
     info_json = rest_in_poly(polyY, polyX, rest_info)
 
-# {Category: 'Chinese', freq:{one_star:20, two_star: 30, three_star:45, four_star:34, five_star:34}}
-# ,{Category: 'Japanese', freq:{one_star:23, two_star: 24, three_star:13,four_star:23,five_star:34}}
-# ,{Category: 'American New', freq:{one_star:43, two_star: 54, three_star:32,four_star:34,five_star:34}}
-# ,{Category: 'Burger', freq:{one_star:24, two_star: 24, three_star:34,four_star:25,five_star:34}}
-# ,{Category: 'Italian', freq:{one_star:34, two_star: 54, three_star:23,four_star:13,five_star:34}}
- 
     # info_json = rest_in_poly(polyY, polyX) #another test
     return jsonify({"result":info_json})
     # return

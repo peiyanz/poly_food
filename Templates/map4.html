@@ -4,8 +4,8 @@
     <meta charset='utf-8' />
     <title></title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css' rel='stylesheet' />
     <style>
@@ -134,6 +134,7 @@ function passToServer(event) {
     event.preventDefault(); 
     var points = [];
     for (var j=0; j < d.getAll().features.length; j++) {
+        visualDatapoints = {}
         if (d.getAll().features[j].geometry.coordinates.length == 1) {
              coordinates = d.getAll().features[j].geometry.coordinates[0];//for shape polygon
         }
@@ -153,8 +154,8 @@ function passToServer(event) {
                     
                 }
 
-        for (var k=0; k<3; k++) {
-        console.log('new')
+        for (var k=0; k<5; k++) {
+        // console.log('new')
         var parameter = {
             'data': JSON.stringify(coordinates_list),
             'offset':k*40
@@ -180,8 +181,23 @@ function passToServer(event) {
                                     "marker-color": '#000000'
                             }
                         }
-                    console.log(one_point)
-                    points.push(one_point); }
+                    // console.log(one_point)
+                    points.push(one_point);
+                    c = data[0][i]["category"]
+                    s = data[0][i]["stars"]
+                    if (visualDatapoints[c]) {
+                        if (visualDatapoints[c][s]) {
+                            visualDatapoints[c][s] = visualDatapoints[c][s] + 1;
+                        } else {
+                            visualDatapoints[c][s] = 1
+                        }
+                    } else {
+                        visualDatapoints[c] = {}
+                        visualDatapoints[c][s] = 1
+                    }
+                    // console.log(visualDatapoints)
+                
+                }
                 // console.log(points)
                 var source_id = new Date().getTime();
                 source_id = source_id.toString();
@@ -215,13 +231,19 @@ function passToServer(event) {
             }
         )
     }
+    // function visualData(visualDatapoints) {
+    //     print 
 
+    // }
+    // visualData(visualDatapoints)
+    console.log(visualDatapoints)
     }
+    
 }
 
 map.on('click', function (e) {
     var features = map.queryRenderedFeatures(e.point, { layers: source_ids });
-    console.log(features)
+    // console.log(features)
     var feature = features[0];
     // Populate the popup and set its coordinates
     // based on the feature found.
