@@ -39,6 +39,7 @@ def rest_in_poly(polyY, polyX, rest_info_api=None):
     #                             axis = 1) == True]
        
     x, y = rest_info.longitude, rest_info.latitude
+    # info = rest_info
     info = rest_info.loc[points_in_poly(polyY, polyX, x, y)]
     # print info
 
