@@ -154,7 +154,7 @@ function passToServer(event) {
                     
                 }
 
-        for (var k=0; k<5; k++) {
+        for (var k=0; k<1; k++) {
         // console.log('new')
         var parameter = {
             'data': JSON.stringify(coordinates_list),
@@ -163,71 +163,76 @@ function passToServer(event) {
         $.post("/", 
             parameter,
             function(response){
-                var data = JSON.parse("[" + response.result + "]")
-                for(var i=0; i<data[0].length; i++) {
+                console.log(response)
+                if (response.result == "No result") {
+                    console.log("no response")
+                } else {
+                    var data = JSON.parse("[" + response.result + "]")
+                    for(var i=0; i<data[0].length; i++) {
 
-                    one_point = {
-                                "type": "Feature",
-                                "geometry": {
-                                "type": "Point",
-                                "coordinates": [data[0][i]["longitude"], data[0][i]['latitude']]
-                                },
-                                "properties": {
-                                    title: "",
-                                    description: "<strong>"+data[0][i]["name"]+"</strong><p>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br></p>",
-                                    // <a href=\""+data[0][i]["url"]+"\" target='_blank'>link to restaurant</a></p>", 
-                                    // "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
-                                    "icon": "restaurant",
-                                    "marker-color": '#000000'
+                        one_point = {
+                                    "type": "Feature",
+                                    "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [data[0][i]["longitude"], data[0][i]['latitude']]
+                                    },
+                                    "properties": {
+                                        title: "",
+                                        description: "<strong>"+data[0][i]["name"]+"</strong><p>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Price: " +data[0][i]["price"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br></p>",
+                                        // <a href=\""+data[0][i]["url"]+"\" target='_blank'>link to restaurant</a></p>", 
+                                        // "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
+                                        "icon": "restaurant",
+                                        "marker-color": '#000000'
+                                }
                             }
-                        }
-                    // console.log(one_point)
-                    points.push(one_point);
-                    c = data[0][i]["category"]
-                    s = data[0][i]["stars"]
-                    if (visualDatapoints[c]) {
-                        if (visualDatapoints[c][s]) {
-                            visualDatapoints[c][s] = visualDatapoints[c][s] + 1;
+                        // console.log(one_point)
+                        points.push(one_point);
+                        c = data[0][i]["category"]
+                        s = data[0][i]["stars"]
+                        if (visualDatapoints[c]) {
+                            if (visualDatapoints[c][s]) {
+                                visualDatapoints[c][s] = visualDatapoints[c][s] + 1;
+                            } else {
+                                visualDatapoints[c][s] = 1
+                            }
                         } else {
+                            visualDatapoints[c] = {}
                             visualDatapoints[c][s] = 1
                         }
-                    } else {
-                        visualDatapoints[c] = {}
-                        visualDatapoints[c][s] = 1
-                    }
-                    // console.log(visualDatapoints)
-                
-                }
-                // console.log(points)
-                var source_id = new Date().getTime();
-                source_id = source_id.toString();
-                // if (source_ids != []) {
-                //     for (var n=0; n<source_ids.length; n++) {
-                //         // map.removeLayer(source_ids[n])
-                //         // source_ids.pop(source_ids[n])
-                //     }
+                        // console.log(visualDatapoints)
                     
-                // }
-                source_ids.push(source_id);
-                layer_with_rest = map.addLayer({
-                    "id": source_id,
-                    "type": "symbol",
-                    "source": {
-                        "type": "geojson",
-                        "data": {
-                            "type": "FeatureCollection",
-                            "features": points
-                        }
-                    },
-                    "layout": {
-                        "icon-image": "{icon}-15",
-                        "text-field": "{title}",
-                        "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                        "text-offset": [0, 0.6],
-                        "text-anchor": "top"
                     }
-                });
-                
+                    // console.log(points)
+                    var source_id = new Date().getTime();
+                    source_id = source_id.toString();
+                    // if (source_ids != []) {
+                    //     for (var n=0; n<source_ids.length; n++) {
+                    //         // map.removeLayer(source_ids[n])
+                    //         // source_ids.pop(source_ids[n])
+                    //     }
+                        
+                    // }
+                    source_ids.push(source_id);
+                    layer_with_rest = map.addLayer({
+                        "id": source_id,
+                        "type": "symbol",
+                        "source": {
+                            "type": "geojson",
+                            "data": {
+                                "type": "FeatureCollection",
+                                "features": points
+                            }
+                        },
+                        "layout": {
+                            "icon-image": "{icon}-15",
+                            "text-field": "{title}",
+                            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                            "text-offset": [0, 0.6],
+                            "text-anchor": "top"
+                        }
+                    });
+                    
+                }
             }
         )
     }

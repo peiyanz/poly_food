@@ -52,14 +52,24 @@ def dis_restaurants():
     longitude = (l2+l4)/2
     latitude = (l1+l3)/2
     radius = int(vincenty((l1,l2),(l3,l4)).meters)
+    if radius > 40000: #maximum range of the polygon
+        radius = 39999
 
     # rest_info = rectangle(l1,l2,l3,l4, offset)
     rest_info = api_call(latitude, longitude, radius, offset)
-    info_json = rest_in_poly(polyY, polyX, rest_info)
+
+    if rest_info.empty:
+        return jsonify({"result":"No result"})
+    else:
+        info_json = rest_in_poly(polyY, polyX, rest_info)
 
     # info_json = rest_in_poly(polyY, polyX) #another test
-    return jsonify({"result":info_json})
+        return jsonify({"result":info_json})
     # return
+
+    
+
+        
 
 if __name__ == "__main__":
     app.debug = True
