@@ -38,6 +38,7 @@ def dis_restaurants():
 #New way of doing it
 
     data = json.loads(request.form.get("data"))
+    offset = json.loads(request.form.get("offset"))
     polyY = [float(lat.get('lat')) for lat in data]
     polyX = [float(lng.get('lng')) for lng in data]
     # polySides = len(polyY)
@@ -47,9 +48,9 @@ def dis_restaurants():
     l4 = max(polyX)
     l3 = max(polyY)
 
-    rest_info = rectangle(l1,l2,l3,l4)
-    # print restaurants
+    rest_info = rectangle(l1,l2,l3,l4, offset)
     info_json = rest_in_poly(polyY, polyX, rest_info)
+    # info_json = rest_in_poly(polyY, polyX) #another test
     return jsonify({"result":info_json})
     # return
 
@@ -57,5 +58,5 @@ if __name__ == "__main__":
     app.debug = True
     # Use the DebugToolbar
     DebugToolbarExtension(app)
-    app.run(port=8080, host='0.0.0.0')
+    app.run(port=5000, host='127.0.0.1')
 

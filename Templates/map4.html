@@ -70,7 +70,7 @@ map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 var d = mapboxgl.Draw();
 d.addTo(map);
 
-var button = document.getElementById('clear')
+var button = document.getElementById('clear');
 
 var distanceContainer = document.getElementById('distance');
 
@@ -91,38 +91,50 @@ var linestring = {
 
 
 function remove () {
-    $('#get_button').prop('disabled', false)
+    $('#get_button').prop('disabled', false);
     geojson.features = [];
     // $.get("/", function (data) {alert("good")});
-    window.location = "/"
+    window.location = "/";
 }
 
 
-var source_ids = []
+var source_ids = [];
 function passToServer(event) {
 
     event.preventDefault(); 
     var points = [];
     for (var j=0; j < d.getAll().features.length; j++) {
         if (d.getAll().features[j].geometry.coordinates.length == 1) {
-             coordinates = d.getAll().features[j].geometry.coordinates[0]//for shape polygon
+             coordinates = d.getAll().features[j].geometry.coordinates[0];//for shape polygon
         }
         else {
-            coordinates = d.getAll().features[j].geometry.coordinates //for line polygon
+            coordinates = d.getAll().features[j].geometry.coordinates; //for line polygon
         }
-        coordinates_list = []
+        coordinates_list = [];
         for (var i=0; i < coordinates.length; i++) {
             coordinates_list.push({"lat": coordinates[i][1], "lng": coordinates[i][0]})
         }
-        var parameter = {
-            'data': JSON.stringify(coordinates_list)
-        };
 
+        if (source_ids != []) {
+            for (var n=source_ids.length-1; n>=0; n--) {
+                map.removeLayer(source_ids[n]);
+                source_ids.pop();
+            }
+                    
+                }
+
+        for (var k=0; k<3; k++) {
+        console.log('new')
+        var parameter = {
+            'data': JSON.stringify(coordinates_list),
+            'offset':k*40
+        };
         $.post("/", 
             parameter,
             function(response){
                 var data = JSON.parse("[" + response.result + "]")
                 for(var i=0; i<data[0].length; i++) {
+
                     one_point = {
                                 "type": "Feature",
                                 "geometry": {
@@ -131,23 +143,26 @@ function passToServer(event) {
                                 },
                                 "properties": {
                                     title: "",
-                                    description: "<strong>"+data[0][i]["name"]+"</strong><p>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br><a href=\""+data[0][i]["url"]+"\" target='_blank'>link to restaurant</a></p>", 
+                                    description: "<strong>"+data[0][i]["name"]+"</strong><p>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br></p>",
+                                    // <a href=\""+data[0][i]["url"]+"\" target='_blank'>link to restaurant</a></p>", 
                                     // "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
                                     "icon": "restaurant",
                                     "marker-color": '#000000'
                             }
                         }
-                    points.push(one_point) }
-                var source_id = new Date().getTime()
+                    console.log(one_point)
+                    points.push(one_point); }
+                // console.log(points)
+                var source_id = new Date().getTime();
                 source_id = source_id.toString();
-                if (source_ids != []) {
-                    for (var n=0; n<source_ids.length; n++) {
-                        map.removeLayer(source_ids[n])
-                        source_ids.pop(source_ids[n])
-                    }
+                // if (source_ids != []) {
+                //     for (var n=0; n<source_ids.length; n++) {
+                //         // map.removeLayer(source_ids[n])
+                //         // source_ids.pop(source_ids[n])
+                //     }
                     
-                }
-                source_ids.push(source_id)
+                // }
+                source_ids.push(source_id);
                 layer_with_rest = map.addLayer({
                     "id": source_id,
                     "type": "symbol",
@@ -166,20 +181,21 @@ function passToServer(event) {
                         "text-anchor": "top"
                     }
                 });
+                
             }
-        )  
+        )
+    }
+
     }
 }
 
 map.on('click', function (e) {
-    var features = map.queryRenderedFeatures(e.point, { layers: [source_ids[0]] });
-
+    var features = map.queryRenderedFeatures(e.point, { layers: source_ids });
     // if (!features.length) {
     //     return;
-    // }
-
+    // }[source_ids[0]]
+    console.log(features)
     var feature = features[0];
-
     // Populate the popup and set its coordinates
     // based on the feature found.
     var popup = new mapboxgl.Popup()
