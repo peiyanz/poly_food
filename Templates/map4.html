@@ -127,7 +127,9 @@ function remove () {
     window.location = "/";
 }
 
-
+function New() {
+        console.log("should run after the loop finishes");
+    }
 var source_ids = [];
 function passToServer(event) {
 
@@ -154,11 +156,11 @@ function passToServer(event) {
                     
                 }
 
-        for (var k=0; k<1; k++) {
+        for (var k=0; k<19; k++) {
         // console.log('new')
         var parameter = {
             'data': JSON.stringify(coordinates_list),
-            'offset':k*40
+            'offset':k*50
         };
         $.post("/", 
             parameter,
@@ -177,9 +179,8 @@ function passToServer(event) {
                                     },
                                     "properties": {
                                         title: "",
-                                        description: "<strong>"+data[0][i]["name"]+"</strong><p>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Price: " +data[0][i]["price"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br></p>",
-                                        // <a href=\""+data[0][i]["url"]+"\" target='_blank'>link to restaurant</a></p>", 
-                                        // "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
+                                        description: "<a href=\""+data[0][i]["url"]+"\" target='_blank'>"+data[0][i]["name"]+"</a><p>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Price: " +data[0][i]["price"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br></p>", 
+                                        "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
                                         "icon": "restaurant",
                                         "marker-color": '#000000'
                                 }
@@ -187,7 +188,7 @@ function passToServer(event) {
                         // console.log(one_point)
                         points.push(one_point);
                         c = data[0][i]["category"]
-                        s = data[0][i]["stars"]
+                        s = data[0][i]["price"]
                         if (visualDatapoints[c]) {
                             if (visualDatapoints[c][s]) {
                                 visualDatapoints[c][s] = visualDatapoints[c][s] + 1;
@@ -232,7 +233,10 @@ function passToServer(event) {
                     });
                     
                 }
+               New(); 
+
             }
+            
         )
     }
     // function visualData(visualDatapoints) {
@@ -241,8 +245,13 @@ function passToServer(event) {
     // }
     // visualData(visualDatapoints)
     console.log(visualDatapoints)
-    }
     
+
+    // console.log(visualDatapoints['burgers'])
+    
+    
+    
+}
 }
 
 map.on('click', function (e) {
