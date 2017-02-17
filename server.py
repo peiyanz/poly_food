@@ -3,7 +3,7 @@ from constant import TOKEN, APP_SECRETE
 from flask_debugtoolbar import DebugToolbarExtension
 import json
 # from yelp_api import rectangle
-from yelp_api_v3 import api_call
+from yelp_api_v3 import api_call, db_data
 from data import rest_in_poly
 from math import sin, cos, sqrt, atan2, radians
 
@@ -49,18 +49,11 @@ def dis_restaurants():
     l1 = min(polyY)
     l4 = max(polyX)
     l3 = max(polyY)
-    # print "point one"
-    # print (l1, l2)
-    # print "point two"
-    # print (l3,l4)
 
     longitude = (l2+l4)/2
     latitude = (l1+l3)/2
-# (lon2 - lon1) * cos( 0.5*(lat2+lat1) )
-# y = lat2 - lat1
-    
 
-# approximate radius of earth in km
+    # approximate radius of earth in km
     R = 6373.0
     # 37.7774552846754, -122.4076447741966)
     # (37.78516819634882, -122.39234039009025)
@@ -76,17 +69,11 @@ def dis_restaurants():
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
     distance = R * c*1000
-
-    # print("Result:", distance)
-
-
     radius = int(distance/2)
-    # radius = int(great_cicle((l1,l2),(l3,l4)).meters)
+
     if radius > 40000: #maximum range of the polygon
         radius = 39999
-    # print longitude
-    # print latitude
-    # print radius
+
 
     # rest_info = rectangle(l1,l2,l3,l4, offset)
     rest_info = api_call(latitude, longitude, radius, offset)
@@ -100,6 +87,18 @@ def dis_restaurants():
         return jsonify({"result":info_json})
     # return
 
+@app.route("/db.json", methods=['POST'])
+def check_db():
+
+    data = json.loads(request.form.get("data"))
+    polyY = [float(lat.get('lat')) for lat in data]
+    polyX = [float(lng.get('lng')) for lng in data]
+    print polyY, polyX
+    data_rest_info = db_data()
+
+    info_json = rest_in_poly(polyY, polyX, data_rest_info)
+
+    return jsonify({"result":info_json})
     
 
         
@@ -108,5 +107,5 @@ if __name__ == "__main__":
     app.debug = True
     # Use the DebugToolbar
     DebugToolbarExtension(app)
-    app.run(port=5000, host='127.0.0.1')
+    app.run(port=5000, host='127.0.0.1', threaded=True)
 

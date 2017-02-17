@@ -16,12 +16,14 @@ existing_data = pd.read_sql_query('SELECT * FROM restaurants',con=engine)
 # print yelp.search(term='food', latitude=37.773972, longitude=-122.431297, radius=1000, limit=1)
 
 # print yelp.autocomplete(text='pizza', latitude=37.77493, longitude=-122.419415)
-
+def db_data():
+    return existing_data
 
 def api_call(latitude, longitude, radius, offset):
     time1 = time.time()
     # results = yelp.search(term='food', latitude=37.773972, longitude=-122.431297, radius=1000, offset=offset,limit=1)
-    results = yelp.search(term='restaurants', latitude=latitude, longitude=longitude, radius=radius, offset=offset+950,limit=50)
+    results = yelp.search(term='restaurants', latitude=latitude, longitude=longitude, radius=radius, offset=offset,limit=50)
+    # print results
     if results.get("total") > 0:
         print "total"
         print results.get("total")
@@ -58,11 +60,12 @@ def api_call(latitude, longitude, radius, offset):
         print '%s function took %0.3f ms' % ("rip", (time2-time1)*1000.0)
 
         #rest_info is the new data from api call
-        
+        global existing_data
         new_data = rest_info[~rest_info["id"].isin(existing_data["id"].tolist())]
-        # print "this is new data"
-        # print new_data
-        existing_data.append(new_data)
+       
+        print len(new_data), len(existing_data)
+        existing_data = existing_data.append(new_data)
+        print len(existing_data)
         # print existing_data
         data = new_data.set_index("id")
         data.to_sql('restaurants', engine, if_exists='append')                    
