@@ -1,19 +1,6 @@
-# def pointInPolygon(polySides, polyY,  polyX, x, y):
-#     i, j = polySides-1, polySides-1
-#     oddNodes = False
-
-#     for i in range(0, polySides):
-#         if ((polyY[i]< y and polyY[j]>=y or
-#              polyY[j]< y and polyY[i]>=y) and
-#            (polyX[i]<=x or polyX[j]<=x)):
-#             oddNodes^=(polyX[i]+(y-polyY[i])/(polyY[j]-polyY[i])*(polyX[j]-polyX[i])<x)
-#         j=i; 
-
-#     return oddNodes; 
-
 import numpy as np
 
-def points_in_poly(py, px, x, y):   
+def inside_polygon_math(py, px, x, y):   
     index = x.index
     py, px, x, y = map(np.array, [py, px, x, y])
     py = np.insert(py, 0, py[-1])
@@ -31,5 +18,20 @@ def points_in_poly(py, px, x, y):
     r = (px[1:]+(y-py[1:])/(py[:-1]-py[1:])*(px[:-1]-px[1:])<x)
     r[np.negative(idx)] = bool(np.logical_xor.identity)
     return index[np.logical_xor.reduce(r, axis=1)]
+
+"""Slow math"""
+
+# def pointInPolygon(polySides, polyY,  polyX, x, y):
+#     i, j = polySides-1, polySides-1
+#     oddNodes = False
+
+#     for i in range(0, polySides):
+#         if ((polyY[i]< y and polyY[j]>=y or
+#              polyY[j]< y and polyY[i]>=y) and
+#            (polyX[i]<=x or polyX[j]<=x)):
+#             oddNodes^=(polyX[i]+(y-polyY[i])/(polyY[j]-polyY[i])*(polyX[j]-polyX[i])<x)
+#         j=i; 
+
+#     return oddNodes;
 
 

@@ -2,4 +2,3 @@ poly/
 *.pyc
 constant.py
 .DS_Store
-static/yelp_academic_dataset_business.json
