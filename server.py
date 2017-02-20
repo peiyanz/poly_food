@@ -16,7 +16,7 @@ app.secret_key = APP_SECRETE
 def home():
     """Home Page"""
 
-    return render_template("map4.html", token=TOKEN)
+    return render_template("map.html", token=TOKEN)
 
 @app.route("/", methods=['POST'])
 def dis_restaurants():
