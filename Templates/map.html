@@ -6,6 +6,7 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+    <!-- import mapbox-gl -->
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css' rel='stylesheet' />
     <style>
@@ -15,224 +16,157 @@
 </head>
 <body>
 
-<style>
-#get_button {
-    position: absolute;
-    top: 93%;
-    left: 50%;
-    z-index: 1;
-}
+    <style>
+    #getRestaurant {
+        position: absolute;
+        top: 93%;
+        left: 50%;
+        z-index: 1;
+    }
 
-#clear {
-    position: absolute;
-    top: 93%;
-    left: 30%;
-    z-index: 1;
-}
+    #clear {
+        position: absolute;
+        top: 93%;
+        left: 30%;
+        z-index: 1;
+    }
 
-/*#table {
-    position: absolute;
-    top: 85%;
-    left: 20%;
+    </style>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.css' type='text/css' />
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <div id='map'>
+        <div id='distance' class='distance-container'></div>
+        <input type=button name="clear" value="Clear Drawing" id="clear">
+        <form action='/' method = 'POST'>
+            <input type="submit" name="getRestaurant" value="Get Restaurants" id="getRestaurant">
+        </form>
+    </div>
 
-}*/
-</style>
-<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.js'></script>
-<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.css' type='text/css' />
+    <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="static/mapbox-gl-draw.js"></script>
+    <link href='static/mapbox-gl-draw.css' rel='stylesheet' />
 
-
-
-<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-
-<div id='map'>
-    <div id='distance' class='distance-container'></div>
-    <input type=button name="clear" value="Clear Drawing" id="clear">
-    <form action='/' method = 'POST'>
-        <input type="submit" name="get_button" value="Get Restaurants" id="get_button">
-    </form>
-</div>
-<!-- <div id='table'>
-    <table class="table table-striped">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Restaurant Name</th>
-      <th>Category</th>
-      <th>Stars</th>
-      <th>No. of Reviews</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>a</td>
-      <td>b</td>
-      <td>c</td>
-    </tr>
-  </tbody>
-</table>
-</div> -->
-
-<script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
-
-<script src="http://code.jquery.com/jquery.js"></script>
-
-<script src="static/mapbox-gl-draw.js"></script>
-<link href='static/mapbox-gl-draw.css' rel='stylesheet' />
-
-<script>
-
-mapboxgl.accessToken = '{{token}}';
-var map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/mapbox/light-v9',
-    center: [-122.431297,37.773972],//[-122.4, 37.8]
-    zoom: 12
-});
-
-map.doubleClickZoom.disable(); 
-var geocoder = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken
+    <script>
+    mapboxgl.accessToken = '{{token}}';
+    // create the map and set the view to be at San Francisco
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/light-v9',
+        center: [-122.431297,37.773972],//[-122.4, 37.8] 
+        zoom: 12
     });
-map.addControl(geocoder, 'top-right');
-map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
-var d = mapboxgl.Draw();
-d.addTo(map);
+    map.doubleClickZoom.disable(); //disable doubleclick to zoom the map
+    var geocoder = new MapboxGeocoder({ accessToken: mapboxgl.accessToken });
+    map.addControl(geocoder, 'top-right');
+    map.addControl(new mapboxgl.NavigationControl(), 'bottom-right'); //zoom func
 
-var button = document.getElementById('clear');
+    var d = mapboxgl.Draw(); //add the drawing bar on the top left
+    d.addTo(map);
 
-var distanceContainer = document.getElementById('distance');
+    var button = document.getElementById('clear'); // clear the drawing
+    var linestring = {
+        "type": "Feature",
+        "geometry": {
+            "type": "LineString",
+            "coordinates": []
+        }
+    };
 
-// GeoJSON object to hold our measurement features
-var geojson = {
-    "type": "FeatureCollection",
-    "features": []
-};
-
-// Used to draw a line between points
-var linestring = {
-    "type": "Feature",
-    "geometry": {
-        "type": "LineString",
-        "coordinates": []
+    function remove () {
+        window.location = "/"; //refresh the page
     }
-};
-
-
-function remove () {
-    $('#get_button').prop('disabled', false);
-    geojson.features = [];
-    // $.get("/", function (data) {alert("good")});
-    window.location = "/";
-}
-
-// function New() {
-//         console.log("should run after the loop finishes");
-//     }
 
 
 
-var source_ids = [];
-function passToServer(event) {
+    var sourceIds = [];
+    function passToServer(event) {
     
-    event.preventDefault(); 
-    // var num_polygon = d.getAll().features[j].geometry.coordinates.length
-    var NUM_CALLBACK = 3 //1 database call, 3 apis
-    var allDone = []
-    $('#get_button').prop('disabled', true);
-    for (var n=source_ids.length-1; n>=0; n--) {
-        map.removeLayer(source_ids[n]);
-    }
-    source_ids = [];
-    function displayPoints(response){
-        // console.log("please run here")
-        // console.log(response)
-        if (response.result == "No result") {
-            console.log("no response")
-        } else {
-            var data = JSON.parse("[" + response.result + "]")
-            var points = [];
-            for(var i=0; i<data[0].length; i++) {
-
-                var one_point = {
-                            "type": "Feature",
-                            "geometry": {
-                            "type": "Point",
-                            "coordinates": [data[0][i]["longitude"], data[0][i]['latitude']]
-                            },
-                            "properties": {
-                                title: "",
-                                description: "<a href=\""+data[0][i]["url"]+"\" target='_blank'>"+data[0][i]["name"]+"</a><p>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Price: " +data[0][i]["price"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br></p>", 
-                                "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
-                                "icon": "restaurant",
-                                "marker-color": '#000000'
+        event.preventDefault(); 
+        var numCallBack = 3 // 1 database call, 3 apis
+        var allDone = []
+        $('#getRestaurant').prop('disabled', true); // disable the get restaurant button
+        // clear all the points (drawing layers) on the map
+        for (var n=sourceIds.length-1; n>=0; n--) {
+            map.removeLayer(sourceIds[n]);
+        }
+        sourceIds = [];
+        function displayPoints(response){
+            if (response.result == "No result") {
+                console.log("no response")
+            } else {
+                var data = JSON.parse("[" + response.result + "]")
+                var points = [];
+                for(var i=0; i<data[0].length; i++) {
+                    // prepare each point in the correct format
+                    var onePoint = {
+                                "type": "Feature",
+                                "geometry": {
+                                "type": "Point",
+                                "coordinates": [data[0][i]["longitude"], data[0][i]['latitude']]
+                                },
+                                "properties": {
+                                    title: "",
+                                    description: 
+                                        "<a href=\""+data[0][i]["url"]+"\"target='_blank'>"+data[0][i]["name"]+"</a><p>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Price: " +data[0][i]["price"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br></p>", 
+                                    "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
+                                    "icon": "restaurant",
+                                    "marker-color": '#000000'
+                            }
                         }
-                    }
-                // console.log(data[0][i]["name"])
-                points.push(one_point);
-                var c = data[0][i]["category"]
-                var s = data[0][i]["price"]
-                if (visualDatapoints[c]) {
-                    if (visualDatapoints[c][s]) {
-                        visualDatapoints[c][s] = visualDatapoints[c][s] + 1;
+                    points.push(onePoint);// point every single point to points
+                    var category = data[0][i]["category"]
+                    var price = data[0][i]["price"]
+                    if (visualDatapoints[category]) {
+                        if (visualDatapoints[category][price]) {
+                            visualDatapoints[category][price] = visualDatapoints[category][price] + 1;
+                        } else {
+                            visualDatapoints[category][price] = 1
+                        }
                     } else {
-                        visualDatapoints[c][s] = 1
+                        visualDatapoints[category] = {}
+                        visualDatapoints[category][price] = 1
                     }
-                } else {
-                    visualDatapoints[c] = {}
-                    visualDatapoints[c][s] = 1
                 }
-                // console.log(visualDatapoints)
-            
+               
+                var sourceId = new Date().getTime();
+                sourceId = sourceId.toString();
+                sourceIds.push(sourceId);
+                map.addLayer({
+                    "id": sourceId,
+                    "type": "symbol",
+                    "source": {
+                        "type": "geojson",
+                        "data": {
+                            "type": "FeatureCollection",
+                            "features": points
+                        }
+                    },
+                    "layout": {
+                        "icon-image": "{icon}-15",
+                        "text-field": "{title}",
+                        "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                        "text-offset": [0, 0.6],
+                        "text-anchor": "top"
+                    }
+                });
+            } 
+            allDone.push(1);
+            if (allDone.length == numCallBack) {
+                $('#getRestaurant').prop('disabled', false);
             }
-            // console.log(points)
-            var source_id = new Date().getTime();
-            source_id = source_id.toString();
-            // if (source_ids != []) {
-            //     for (var n=0; n<source_ids.length; n++) {
-            //         // map.removeLayer(source_ids[n])
-            //         // source_ids.pop(source_ids[n])
-            //     }
-                
-            // }
-            // console.log("push begin")
-            source_ids.push(source_id);
-            // console.log("push end")
-            layer_with_rest = map.addLayer({
-                "id": source_id,
-                "type": "symbol",
-                "source": {
-                    "type": "geojson",
-                    "data": {
-                        "type": "FeatureCollection",
-                        "features": points
-                    }
-                },
-                "layout": {
-                    "icon-image": "{icon}-15",
-                    "text-field": "{title}",
-                    "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                    "text-offset": [0, 0.6],
-                    "text-anchor": "top"
-                }
-            });
-        }
-        allDone.push(1);
-        if (allDone.length == NUM_CALLBACK) {
-            $('#get_button').prop('disabled', false);
-        }
     }
 
     
     function display(j){
         var coordinates;
-        visualDatapoints = {}
+        visualDatapoints = {};
         if (d.getAll().features[j].geometry.coordinates.length == 1) {
             //for shape polygon
-             coordinates = d.getAll().features[j].geometry.coordinates[0];
-        }
-        else {
+            coordinates = d.getAll().features[j].geometry.coordinates[0];
+        } else {
             //for line polygon
             coordinates = d.getAll().features[j].geometry.coordinates; 
         }
@@ -240,62 +174,46 @@ function passToServer(event) {
         for (var i=0; i < coordinates.length; i++) {
             coordinates_list.push({"lat": coordinates[i][1], "lng": coordinates[i][0]})
         }
-
         var parameters = {
             'data': JSON.stringify(coordinates_list)
         };
+        // Ajax call to check db
         $.post("/db.json", parameters, displayPoints)
-
-        for (var k=0; k<NUM_CALLBACK; k++) {
-            // console.log('new')
+        for (var k=0; k<numCallBack; k++) {
             var parameter = {
                 'data': JSON.stringify(coordinates_list),
                 'offset':k*50
             };
+            // Ajax call to call yelp api
             $.post("/", parameter, displayPoints)
         }
-
-        
-        // visualData(visualDatapoints)
         console.log(visualDatapoints)
-        // console.log("end" + j)
     }    
         
-    // console.log("out1")
     for (var j=0; j < d.getAll().features.length; j++) {
         display(j)
         // (function(j) {
         //     setTimeout(display(j), 0);
         // })(j);
     }
-
-    // $("#get_button").disabled = true;
-    
-
 }
 
 
-map.on('click', function (e) {
-    var features = map.queryRenderedFeatures(e.point, { layers: source_ids });
-    // console.log(features)
-    var feature = features[0];
-    // Populate the popup and set its coordinates
-    // based on the feature found.
-    var popup = new mapboxgl.Popup()
-        .setLngLat(feature.geometry.coordinates)
-        .setHTML(feature.properties.description)
-        .addTo(map);
-});
+    map.on('click', function (e) {
+        var features = map.queryRenderedFeatures(e.point, { layers: sourceIds });
+        var feature = features[0];
+        // Populate the popup and set its coordinates based on the feature found.
+        var popup = new mapboxgl.Popup()
+            .setLngLat(feature.geometry.coordinates)
+            .setHTML(feature.properties.description)
+            .addTo(map);
+    });
 
-$('#clear').on('click', remove);
+    $('#clear').on('click', remove);
+    $('#getRestaurant').on('click', passToServer);
+    $('.mapbox-gl-draw_point').hide(); //hiding the draw points
 
-$('#get_button').on('click', passToServer);
-
-$('.mapbox-gl-draw_point').hide(); //hiding the draw points
-
-
-
-</script>
+    </script>
 
 </body>
 <a href="http://www.freepik.com/free-photos-vectors/background"></a>
