@@ -77,10 +77,11 @@ def dis_restaurants():
 
     # rest_info = rectangle(l1,l2,l3,l4, offset)
     rest_info = api_call(latitude, longitude, radius, offset)
-
+    print "api call before if"
     if rest_info.empty:
         return jsonify({"result":"No result"})
     else:
+        print "api call"
         info_json = rest_in_poly(polyY, polyX, rest_info)
 
     # info_json = rest_in_poly(polyY, polyX) #another test
@@ -93,7 +94,7 @@ def check_db():
     data = json.loads(request.form.get("data"))
     polyY = [float(lat.get('lat')) for lat in data]
     polyX = [float(lng.get('lng')) for lng in data]
-    print polyY, polyX
+    # print polyY, polyX
     data_rest_info = db_data()
 
     info_json = rest_in_poly(polyY, polyX, data_rest_info)
@@ -104,8 +105,8 @@ def check_db():
         
 
 if __name__ == "__main__":
-    app.debug = True
+    app.debug = False
     # Use the DebugToolbar
     DebugToolbarExtension(app)
-    app.run(port=5000, host='127.0.0.1', threaded=True)
+    app.run(port=5000, host='127.0.0.1')
 

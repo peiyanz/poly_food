@@ -11,7 +11,7 @@ yelp = Yelp(
 )
 engine = create_engine('postgresql://peiyan:peiyan@localhost:8000/peiyan')
 existing_data = pd.read_sql_query('SELECT * FROM restaurants',con=engine)
-
+print "outside"
 # Simple Examples
 # print yelp.search(term='food', latitude=37.773972, longitude=-122.431297, radius=1000, limit=1)
 
@@ -25,8 +25,8 @@ def api_call(latitude, longitude, radius, offset):
     results = yelp.search(term='restaurants', latitude=latitude, longitude=longitude, radius=radius, offset=offset,limit=50)
     # print results
     if results.get("total") > 0:
-        print "total"
-        print results.get("total")
+        # print "total"
+        # print results.get("total")
         category = []
         location = []
         longitude = []
@@ -41,7 +41,10 @@ def api_call(latitude, longitude, radius, offset):
         # for r in results:#, restaurants3, restaurants4, restaurants5]:
         for i in results.get('businesses'):
             id.append(i.get('id'))
-            category.append(i.get('categories')[0].get("alias") )
+            if i.get('categories'):
+                category.append(i.get('categories')[0].get("alias") )
+            else:
+                category.append(None)
             location.append(i.get('location').get("display_address"))
             longitude.append(i.get('coordinates').get('longitude'))
             latitude.append(i.get('coordinates').get('latitude'))
@@ -57,20 +60,24 @@ def api_call(latitude, longitude, radius, offset):
                       "stars": rating, "price": price, "review_count": review_count, "url": url, "image": image})
         # print rest_info
         time2 = time.time()
-        print '%s function took %0.3f ms' % ("rip", (time2-time1)*1000.0)
+        # print '%s function took %0.3f ms' % ("rip", (time2-time1)*1000.0)
 
         #rest_info is the new data from api call
         global existing_data
         new_data = rest_info[~rest_info["id"].isin(existing_data["id"].tolist())]
        
         print len(new_data), len(existing_data)
-        existing_data = existing_data.append(new_data)
-        print len(existing_data)
+        # if len(new_data) != 0:
+        #     existing_data = existing_data.append(new_data)
+        # print len(existing_data)
         # print existing_data
         data = new_data.set_index("id")
-        data.to_sql('restaurants', engine, if_exists='append')                    
+        try:
+            data.to_sql('restaurants', engine, if_exists='append')  
+        except Exception as err:
+            print err                  
         
-        return rest_info
+        return new_data
 
     else: 
         return pd.DataFrame()

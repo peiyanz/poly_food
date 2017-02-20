@@ -6,25 +6,25 @@ from is_within_polygon import points_in_poly
 import time
 
 
-json_file = open("static/yelp_academic_dataset_business.json").read()
-json_text = '[' + ','.join(json_file.strip().split('\n')) + ']'
+# json_file = open("static/yelp_academic_dataset_business.json").read()
+# json_text = '[' + ','.join(json_file.strip().split('\n')) + ']'
 
-rest_info_local = pd.read_json(json_text) #all restaurant info
-# rest_info = rest_info[rest_info["state"] == 'NV']
+# rest_info_local = pd.read_json(json_text) #all restaurant info
+# # rest_info = rest_info[rest_info["state"] == 'NV']
 
-rest_info_local = pd.DataFrame({'address': rest_info_local['address']+ " " +rest_info_local['city']+ " " +rest_info_local['state']+ " "+ rest_info_local['postal_code'],
-                        'name': rest_info_local['name'],
-                        # 'hours': rest_info_local['hours'],
-                        'review_count': rest_info_local['review_count'],
-                        'stars': rest_info_local['stars'],
-                        'latitude': rest_info_local['latitude'],
-                        'longitude': rest_info_local['longitude'],
-                        'category': rest_info_local['categories']})
+# rest_info_local = pd.DataFrame({'address': rest_info_local['address']+ " " +rest_info_local['city']+ " " +rest_info_local['state']+ " "+ rest_info_local['postal_code'],
+#                         'name': rest_info_local['name'],
+#                         # 'hours': rest_info_local['hours'],
+#                         'review_count': rest_info_local['review_count'],
+#                         'stars': rest_info_local['stars'],
+#                         'latitude': rest_info_local['latitude'],
+#                         'longitude': rest_info_local['longitude'],
+#                         'category': rest_info_local['categories']})
 
 
 
-def rest_in_poly(polyY, polyX, rest_info_api=None):
-    rest_info = rest_info_local
+def rest_in_poly(polyY, polyX, rest_info_api):
+    # rest_info = rest_info_local
     if rest_info_api is not None:
         rest_info = rest_info_api
     # restaurant
@@ -42,6 +42,8 @@ def rest_in_poly(polyY, polyX, rest_info_api=None):
     # info = rest_info
     info = rest_info.loc[points_in_poly(polyY, polyX, x, y)]
     # print info
+    print "in rip"
+    # print len(polyY)
 
     time2 = time.time()
     print '%s function took %0.3f ms' % ("rip", (time2-time1)*1000.0)
