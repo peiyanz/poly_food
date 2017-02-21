@@ -7,7 +7,7 @@ body{
 }
 path {  stroke: #fff; }
 path:hover {  opacity:0.9; }
-rect:hover {  fill:blue; }
+rect:hover {  fill:#83AA30; }
 .axis {  font: 10px sans-serif; }
 .legend tr{    border-bottom:1px solid grey; }
 .legend tr:first-child{    border-top:1px solid grey; }
@@ -42,11 +42,11 @@ rect:hover {  fill:blue; }
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 function dashboard(id, fData){
-    var barColor = 'steelblue';
-    function segColor(c){ return {one_star:"#807dba", two_star:"#e08214",three_star:"#41ab5d", four_star: "#441999", five_star: "195D99"}[c]; }
+    var barColor = '#3F90AC';
+    function segColor(c){ return {$:"#588C7E", $$:"#F2E394",$$$:"#8C4646", $$$$: "#D96459", null: "#8C4646"}[c]; }
     
     // compute total for each state.
-    fData.forEach(function(d){d.total=d.freq.one_star+d.freq.two_star+d.freq.three_star+d.freq.four_star+d.freq.five_star;});
+    fData.forEach(function(d){d.total=d.freq.$+d.freq.$$+d.freq.$$$+d.freq.$$$$+d.freq.null;});
     
     // function to handle histogram.
     function histoGram(fD){
@@ -226,7 +226,7 @@ function dashboard(id, fData){
     }
     
     // calculate total frequency by segment for all state.
-    var tF = ['one_star','two_star','three_star','four_star', 'five_star'].map(function(d){ 
+    var tF = ['$','$$','$$$','$$$$'].map(function(d){ 
         return {type:d, freq: d3.sum(fData.map(function(t){ return t.freq[d];}))}; 
     });    
     
@@ -240,24 +240,19 @@ function dashboard(id, fData){
 </script>
 
 <script>
-var freqData=[
-// {Category:'Chinese',freq:{low:4786, mid:1319, high:249}}
-// ,{Category:'Japanese',freq:{low:1101, mid:412, high:674}}
-// ,{Category:'American New',freq:{low:932, mid:2149, high:418}}
-{Category: 'Chinese', freq:{one_star:20, two_star: 30, three_star:45, four_star:34, five_star:34}}
-,{Category: 'Japanese', freq:{one_star:23, two_star: 24, three_star:13,four_star:23,five_star:34}}
-,{Category: 'American New', freq:{one_star:43, two_star: 54, three_star:32,four_star:34,five_star:34}}
-,{Category: 'Burger', freq:{one_star:24, two_star: 24, three_star:34,four_star:25,five_star:34}}
-,{Category: 'Italian', freq:{one_star:34, two_star: 54, three_star:23,four_star:13,five_star:34}}
-// , four_star: 40, five_star: 39}}
-// ,{State:'DE',freq:{low:832, mid:1152, high:1862}}
-// ,{State:'FL',freq:{low:4481, mid:3304, high:948}}
-// ,{State:'GA',freq:{low:1619, mid:167, high:1063}}
-// ,{State:'IA',freq:{low:1819, mid:247, high:1203}}
-// ,{State:'IL',freq:{low:4498, mid:3852, high:942}}
-// ,{State:'IN',freq:{low:797, mid:1849, high:1534}}
-// ,{State:'KS',freq:{low:162, mid:379, high:471}}
-];
+
+data = [
+['hotels', {'$$': 59, 'null': 0, '$$$$': 2, '$': 6, '$$$': 19}],
+['newamerican', {'$$': 26, 'null': 4, '$$$$': 4, '$': 1, '$$$': 10}], 
+['coffee', {'$$': 6, 'null': 1, '$$$$': 0, '$': 23, '$$$': 0}], 
+['pizza', {'$$': 11, 'null': 4, '$$$$': 0, '$': 14, '$$$': 0}], 
+['mexican', {'$$': 4, 'null': 1, '$$$$': 0, '$': 16, '$$$': 0}]
+]
+
+var freqData=[];
+for (var m=0; m<data.length; m++) {
+    freqData.push({Category: data[m][0], freq: data[m][1]})
+}
 
 dashboard('#dashboard',freqData);
 </script>

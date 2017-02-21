@@ -96,7 +96,16 @@ def check_db():
     print "checking_db"
 
     return jsonify({"result":info_json})# pass results back to js
-    
+ 
+
+@app.route("/visual.json", methods=['POST'])
+def visual_datapoints():
+
+    category = json.loads(request.form.get("data"))
+    top_five = pd.DataFrame(category).sum().sort_values(ascending=False).head(7).index.tolist()
+    # {Category: 'Chinese', freq:{one_star:20, two_star: 30, three_star:45, four_star:34, five_star:34}}
+    info = [[str(cat_dic), category[cat_dic]] for cat_dic in top_five]
+    return jsonify({"data": info })
 
 
 if __name__ == "__main__":
