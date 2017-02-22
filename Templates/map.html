@@ -17,17 +17,17 @@
 <body>
 
     <style>
-    #getRestaurant {
+ /*   #getRestaurant {
         position: absolute;
         top: 93%;
         left: 50%;
         z-index: 1;
-    }
+    }*/
 
     #clear {
         position: absolute;
         top: 93%;
-        left: 30%;
+        left: 45%;
         z-index: 1;
     }
 
@@ -45,10 +45,10 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <div id='map'>
         <div id='distance' class='distance-container'></div>
-        <input type=button name="clear" value="Clear Drawing" id="clear">
-        <form action='/' method = 'POST'>
+        <input type=button name="clear" value="Clear" id="clear">
+       <!--  <form action='/' method = 'POST'>
             <input type="submit" name="getRestaurant" value="Get Restaurants" id="getRestaurant">
-        </form>
+        </form> -->
     </div>
 
     <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
@@ -297,23 +297,15 @@
     <script>
     function visualize(returned_results) {
         var datas = returned_results.data
-        console.log(datas)
+        // console.log(datas)
         var freqData=[];
         for (var m=0; m<datas.length; m++) {
             freqData.push({Category: datas[m][0], freq: datas[m][1]})
         }
-        console.log(freqData)
 
         dashboard('#dashboard',freqData);
 
     }
-    // data = [
-    // ['hotels', {'$$': 59, 'null': 0, '$$$$': 2, '$': 6, '$$$': 19}],
-    // ['newamerican', {'$$': 26, 'null': 4, '$$$$': 4, '$': 1, '$$$': 10}], 
-    // ['coffee', {'$$': 6, 'null': 1, '$$$$': 0, '$': 23, '$$$': 0}], 
-    // ['pizza', {'$$': 11, 'null': 4, '$$$$': 0, '$': 14, '$$$': 0}], 
-    // ['mexican', {'$$': 4, 'null': 1, '$$$$': 0, '$': 16, '$$$': 0}]
-    // ]
     </script>
 
     <script>
@@ -331,8 +323,10 @@
     map.addControl(geocoder, 'top-right');
     map.addControl(new mapboxgl.NavigationControl(), 'bottom-right'); //zoom func
 
-    var d = mapboxgl.Draw(); //add the drawing bar on the top left
-    d.addTo(map);
+    // var d = mapboxgl.Draw(); //add the drawing bar on the top left
+    // d.addTo(map);
+    var d = new MapboxDraw();
+    map.addControl(d, 'top-left');
 
     var button = document.getElementById('clear'); // clear the drawing
     var linestring = {
@@ -344,20 +338,22 @@
     };
 
     function remove () {
-        window.location = "/"; //refresh the page
+        window.location = "/"; // refresh the page
     }
-
-
 
     var sourceIds = [];
     function passToServer(event) {
     
         event.preventDefault(); 
+        passToServerNoCB();
+    }
+
+    function passToServerNoCB() {
         $('#dashboard').empty()
         var numCallBack = 1; // 1 database call, 3 apis
         var allDone = [];
         var done = [];
-        var totalCalls = 1*(d.getAll().features.length) - 1;
+        var totalCalls = 1*(d.getAll().features.length);
         console.log(totalCalls)
         $('#getRestaurant').prop('disabled', true); // disable the get restaurant button
         // clear all the points (drawing layers) on the map
@@ -440,7 +436,6 @@
                 $('#getRestaurant').prop('disabled', false);
             }
     }
-
    
     function display(j){
         var coordinates;
@@ -466,16 +461,11 @@
                 'data': JSON.stringify(coordinates_list),
                 'offset':k*50
             };
-            // Ajax call to call yelp api
-            // $.post("/", parameter, displayPoints)
         }
     }    
         
     for (var j=0; j < d.getAll().features.length; j++) {
         display(j)
-        // (function(j) {
-        //     setTimeout(display(j), 0);
-        // })(j);
     }
 }
 
@@ -490,10 +480,45 @@
             .addTo(map);
     });
 
-    $('#clear').on('click', remove);
-    $('#getRestaurant').on('click', passToServer);
-    $('.mapbox-gl-draw_point').hide(); //hiding the draw points
+    var isMouseMove;
+    var canvas = map.getCanvasContainer();
 
+    map.on('mousemove', function (e) {
+        var classname = $('#map')[0].className; 
+        if (classname.includes("mouse-move") || classname.includes("mouse-drag")) {
+            isMouseMove = true;
+        } else {
+            isMouseMove = false;
+        }
+    });
+
+    function mouseDown() {
+        if (!isMouseMove) return;
+        isDragging = true;
+        // Set a cursor indicator
+        // canvas.style.cursor = 'grab';
+        // Mouse events
+        // map.on('mousemove', onMove);
+        map.once('mouseup', onUp);
+    };
+
+    function onUp(e) {
+        if (!isDragging) return;
+        // canvas.style.cursor = '';
+        isDragging = false;
+        passToServerNoCB();
+        // Unbind mouse events
+        // map.off('mousemove', onMove);
+    };
+
+    map.on('mousedown', mouseDown, true);
+    map.on('click', mouseDown, true);
+
+    $('#clear').on('click', remove);
+    $('#map').on('dblclick', passToServer);
+    $('.mapbox-gl-draw_point').hide(); //hiding the draw points
+    $('.mapbox-gl-draw_uncombine').hide();//hiding the uncombine
+    $('.mapbox-gl-draw_combine').hide(); //hiding the combine
     </script>
 
 </body>
