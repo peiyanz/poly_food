@@ -16,7 +16,7 @@ def is_in_polygon(polyY, polyX, points):
     print '%s function took %0.3f ms' % ("inside_polygon_math", (time2-time1)*1000.0)
     
     info_json = info.to_json(orient = "records")
-    return info_json
+    return [info_json, info]
 
 
 

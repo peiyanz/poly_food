@@ -39,14 +39,22 @@ rect:hover {  fill:#83AA30; }
 <body>
 <div id='dashboard'>
 </div>
-<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>s
 <script>
 function dashboard(id, fData){
     var barColor = '#3F90AC';
-    function segColor(c){ return {$:"#588C7E", $$:"#F2E394",$$$:"#8C4646", $$$$: "#D96459", null: "#8C4646"}[c]; }
+    var first = title_new[0];
+    var second = title_new[1];
+    var third = title_new[2];
+    var fourth = title_new[3];
+    var fifth = title_new[4];
+    // ['hotels','newamerican','coffee','pizza','mexican']
+    function segColor(c){ return {'mexican':"#90AFC5", "chinese":"#336b87","pizza":"#2A3132", "newamerican": "#763626", "italian": "#46211A", "japanese":"#693D3D" ,"coffee":"#BA5536", "tradamerican":"A43820", "sandwiches":"#505160", "vietnamese":"#68829E", "hotels":"#AEBD38","seafood": "#598234","thai": "#003B46", "delis": "#07575B","burgers":"#66A5AD", "cafes":"#C4DFE6", "bars":"#98DBC6", "indpak": "#F18D9E", "sushi": "#F4CC70", "bakeries": "#DE7A22", "breakfast_brunch":"#5D535E", "hotdogs": "#9A9EAB","catering":"#063852" , 
+        "korean": "#D09683", "grocery": "#C05805", "latin": "#B38867", "foodtrucks":"#CDCDC0" ,"french":"#626D71", "mediterranean": "#32DFA2", "wine_bars":"#4897D8" }[c]; }
     
     // compute total for each state.
-    fData.forEach(function(d){d.total=d.freq.$+d.freq.$$+d.freq.$$$+d.freq.$$$$+d.freq.null;});
+    fData.forEach(function(d){ 
+        d.total=d.freq[first]+d.freq[second]+d.freq[third]+d.freq[fourth]+d.freq[fifth];});
     
     // function to handle histogram.
     function histoGram(fD){
@@ -226,7 +234,7 @@ function dashboard(id, fData){
     }
     
     // calculate total frequency by segment for all state.
-    var tF = ['$','$$','$$$','$$$$'].map(function(d){ 
+    var tF = title_new.map(function(d){ 
         return {type:d, freq: d3.sum(fData.map(function(t){ return t.freq[d];}))}; 
     });    
     
@@ -240,18 +248,25 @@ function dashboard(id, fData){
 </script>
 
 <script>
-
+title_new = ['hotels','newamerican','coffee','pizza','mexican']
 data = [
-['hotels', {'$$': 59, 'null': 0, '$$$$': 2, '$': 6, '$$$': 19}],
-['newamerican', {'$$': 26, 'null': 4, '$$$$': 4, '$': 1, '$$$': 10}], 
-['coffee', {'$$': 6, 'null': 1, '$$$$': 0, '$': 23, '$$$': 0}], 
-['pizza', {'$$': 11, 'null': 4, '$$$$': 0, '$': 14, '$$$': 0}], 
-['mexican', {'$$': 4, 'null': 1, '$$$$': 0, '$': 16, '$$$': 0}]
+// ['hotels', {'$$': 59, 'null': 0, '$$$$': 2, '$': 6, '$$$': 19}],
+// ['newamerican', {'$$': 26, 'null': 4, '$$$$': 4, '$': 1, '$$$': 10}], 
+// ['coffee', {'$$': 6, 'null': 1, '$$$$': 0, '$': 23, '$$$': 0}], 
+// ['pizza', {'$$': 11, 'null': 4, '$$$$': 0, '$': 14, '$$$': 0}], 
+// ['mexican', {'$$': 4, 'null': 1, '$$$$': 0, '$': 16, '$$$': 0}]
+['$',{'newamerican': 0, 'hotels':0, 'coffee':23, 'pizza': 34, 'mexican': 0}],
+['$$',{'hotels': 30, 'newamerican':40, 'coffee':23, 'pizza': 34, 'mexican': 23}],
+['$$$',{'pizza': 30, 'newamerican':40, 'coffee':23, 'hotels': 34, 'mexican': 23}],
+['$$$$',{'hotels': 30, 'newamerican':40, 'coffee':23, 'pizza': 34, 'mexican': 23}]
 ]
+
+
 
 var freqData=[];
 for (var m=0; m<data.length; m++) {
     freqData.push({Category: data[m][0], freq: data[m][1]})
+    // freqData.push({freq: data[m][0], Categry: data[m][1]})
 }
 
 dashboard('#dashboard',freqData);

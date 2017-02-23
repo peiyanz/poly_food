@@ -76,7 +76,7 @@ def dis_restaurants():
     else:
         print "calling_yelp"
         # is_in_polygon to filter out points that not live inside of polygon
-        info_json = is_in_polygon(polyY, polyX, api_points)
+        [info_json, info] = is_in_polygon(polyY, polyX, api_points)
         return jsonify({"result":info_json}) # pass results back to js
 
 
@@ -92,10 +92,38 @@ def check_db():
     engine = create_engine('postgresql://peiyan:peiyan@localhost:8000/peiyan')
     db_points = pd.read_sql_query('SELECT * FROM restaurants',con=engine)
 
-    info_json = is_in_polygon(polyY, polyX, db_points)
+    [info_json, info] = is_in_polygon(polyY, polyX, db_points)
     print "checking_db"
+    top_cat = info.groupby(['category']).size().sort_values(ascending=False).head(7)
+    new_cat = info[info['category'].isin(top_cat.index.tolist())].groupby(['price','category']).size()
+    dict1 = new_cat.to_dict()
+    title_new = [str(i) for i in top_cat.index.tolist()]
+    l1,l2,l3,l4 = {}, {}, {},{}
+    for j in title_new:
+        l1[j] = 0
+        l2[j] = 0
+        l3[j] = 0
+        l4[j] = 0
+    for i in dict1:
+        if str(i[0]) == '$':
+            l1[i[1]] = dict1[i]
+        elif str(i[0]) == '$$':
+            l2[i[1]] = dict1[i]
+        elif str(i[0]) == '$$$':
+            l3[i[1]] = dict1[i]
+        elif str(i[0]) == '$$$$':
+            l4[i[1]] = dict1[i]
+        else:
+            print i
+    final = [['$',l1],['$$',l2],['$$$',l3],['$$$$',l4]]
+    # lsts = []
+    # for i in dict1:
+    #     lsts.append([i[0]+', {' + i[1] + ': ' + str(dict1[i]) +'}' ])
+    
+    print final
+    print title_new
 
-    return jsonify({"result":info_json})# pass results back to js
+    return jsonify({"result":info_json, "visualization": final, "title_new": title_new})# pass results back to js
  
 
 @app.route("/visual.json", methods=['POST'])
@@ -104,8 +132,9 @@ def visual_datapoints():
     category = json.loads(request.form.get("data"))
     top_five = pd.DataFrame(category).sum().sort_values(ascending=False).head(7).index.tolist()
     # {Category: 'Chinese', freq:{one_star:20, two_star: 30, three_star:45, four_star:34, five_star:34}}
-    info = [[str(cat_dic), category[cat_dic]] for cat_dic in top_five]
-    return jsonify({"data": info })
+    info_ = [[str(cat_dic), category[cat_dic]] for cat_dic in top_five]
+    print info_
+    return jsonify({"data": info_ })
 
 
 if __name__ == "__main__":

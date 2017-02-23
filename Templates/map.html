@@ -98,10 +98,28 @@
     <script>
     function dashboard(id, fData){
         var barColor = '#3F90AC';
-        function segColor(c){ return {$:"#588C7E", $$:"#F2E394",$$$:"#8C4646", $$$$: "#D96459", null: "#8C4646"}[c]; }
+        // function segColor(c){ return {$:"#588C7E", $$:"#F2E394",$$$:"#8C4646", $$$$: "#D96459", null: "#8C4646"}[c]; }
         
-        // compute total for each state.
-        fData.forEach(function(d){d.total=d.freq.$+d.freq.$$+d.freq.$$$+d.freq.$$$$+d.freq.null;});
+        // // compute total for each state.
+        // fData.forEach(function(d){d.total=d.freq.$+d.freq.$$+d.freq.$$$+d.freq.$$$$+d.freq.null;});
+
+        var barColor = '#3F90AC';
+        console.log(title_new);
+        var first = title_new[0];
+        var second = title_new[1];
+        var third = title_new[2];
+        var fourth = title_new[3];
+        var fifth = title_new[4];
+        // ['hotels','newamerican','coffee','pizza','mexican']
+        function segColor(c){ return {'mexican':"#90AFC5", "chinese":"#336b87","pizza":"#2A3132", "newamerican": "#763626", "italian": "#46211A", "japanese":"#693D3D" ,"coffee":"#BA5536", "tradamerican":"A43820", "sandwiches":"#505160", "vietnamese":"#68829E", "hotels":"#AEBD38","seafood": "#598234","thai": "#003B46", "delis": "#07575B","burgers":"#66A5AD", "cafes":"#C4DFE6", "bars":"#98DBC6", "indpak": "#F18D9E", "sushi": "#F4CC70", "bakeries": "#DE7A22", "breakfast_brunch":"#5D535E", "hotdogs": "#9A9EAB","catering":"#063852" , 
+            "korean": "#D09683", "grocery": "#C05805", "latin": "#B38867", "foodtrucks":"#CDCDC0" ,"french":"#626D71", "mediterranean": "#32DFA2", "wine_bars":"#4897D8" }[c]; }
+    
+    // compute total for each state.
+        fData.forEach(function(d){ 
+            console.log(d)
+            console.log(d.freq)
+            console.log(d.freq[first])
+            d.total=d.freq[first]+d.freq[second]+d.freq[third]+d.freq[fourth]+d.freq[fifth];});
         
         // function to handle histogram.
         function histoGram(fD){
@@ -281,7 +299,7 @@
         }
         
         // calculate total frequency by segment for all state.
-        var tF = ['$','$$','$$$','$$$$'].map(function(d){ 
+        var tF = title_new.map(function(d){ 
             return {type:d, freq: d3.sum(fData.map(function(t){ return t.freq[d];}))}; 
         });    
         
@@ -295,13 +313,14 @@
     </script>
 
     <script>
-    function visualize(returned_results) {
-        var datas = returned_results.data
+    function visualize(datas, title_new) {
+        // var datas = returned_results.data
         // console.log(datas)
         var freqData=[];
         for (var m=0; m<datas.length; m++) {
             freqData.push({Category: datas[m][0], freq: datas[m][1]})
         }
+        console.log(freqData)
 
         dashboard('#dashboard',freqData);
 
@@ -365,6 +384,10 @@
             if (response.result == "No result") {
                 console.log("no response")
             } else {
+                console.log(response.visualization)
+                datas = response.visualization
+                title_new = response.title_new
+                visualize(datas, title_new);
                 var data = JSON.parse("[" + response.result + "]")
                 var points = [];
                 for(var i=0; i<data[0].length; i++) {
@@ -385,19 +408,19 @@
                             }
                         }
                     points.push(onePoint);// point every single point to points
-                    var category = data[0][i]["category"]
-                    var price = data[0][i]["price"]
-                    if (visualDatapoints[category]) {
-                        if (visualDatapoints[category][price]) {
-                            visualDatapoints[category][price] = visualDatapoints[category][price] + 1;
-                        } else {
-                            visualDatapoints[category][price] = 1
-                        }
-                    } else {
-                        visualDatapoints[category] = {"$":0,"$$":0,"$$$":0,
-                                                      "$$$$":0, null:0}
-                        visualDatapoints[category][price] = 1
-                    }
+                    // var category = data[0][i]["category"]
+                    // var price = data[0][i]["price"]
+                    // if (visualDatapoints[category]) {
+                    //     if (visualDatapoints[category][price]) {
+                    //         visualDatapoints[category][price] = visualDatapoints[category][price] + 1;
+                    //     } else {
+                    //         visualDatapoints[category][price] = 1
+                    //     }
+                    // } else {
+                    //     visualDatapoints[category] = {"$":0,"$$":0,"$$$":0,
+                    //                                   "$$$$":0, null:0}
+                    //     visualDatapoints[category][price] = 1
+                    // }
                 }
                
                 var sourceId = new Date().getTime();
@@ -427,7 +450,7 @@
                  var para = {
                         'data': JSON.stringify(visualDatapoints)
                 };
-                $.post("/visual.json", para, visualize)
+                // $.post("/visual.json", para, visualize)
                 allDone = []
                 // $('#getRestaurant').prop('disabled', false);
             }
@@ -439,7 +462,7 @@
    
     function display(j){
         var coordinates;
-        visualDatapoints = {};
+        // visualDatapoints = {};
         if (d.getAll().features[j].geometry.coordinates.length == 1) {
             //for shape polygon
             coordinates = d.getAll().features[j].geometry.coordinates[0];
