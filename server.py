@@ -94,12 +94,12 @@ def check_db():
 
     [info_json, info] = is_in_polygon(polyY, polyX, db_points)
     print "checking_db"
-    top_cat = info.groupby(['category']).size().sort_values(ascending=False).head(7)
-    new_cat = info[info['category'].isin(top_cat.index.tolist())].groupby(['price','category']).size()
-    dict1 = new_cat.to_dict()
-    title_new = [str(i) for i in top_cat.index.tolist()]
-    l1,l2,l3,l4 = {}, {}, {},{}
-    for j in title_new:
+    # select the top 7 categories
+    top_cat = info.groupby(['category']).size().sort_values(ascending=False).head(7).index.tolist()
+    data_top_cat = info[info['category'].isin(top_cat)].groupby(['price','category']).size()
+    dict1 = data_top_cat.to_dict()
+    l1,l2,l3,l4 = {}, {}, {}, {}
+    for j in top_cat:
         l1[j] = 0
         l2[j] = 0
         l3[j] = 0
@@ -116,14 +116,8 @@ def check_db():
         else:
             print i
     final = [['$',l1],['$$',l2],['$$$',l3],['$$$$',l4]]
-    # lsts = []
-    # for i in dict1:
-    #     lsts.append([i[0]+', {' + i[1] + ': ' + str(dict1[i]) +'}' ])
-    
-    print final
-    print title_new
 
-    return jsonify({"result":info_json, "visualization": final, "title_new": title_new})# pass results back to js
+    return jsonify({"result":info_json, "visualization": final, "top_categoy": top_cat})# pass results back to js
  
 
 @app.route("/visual.json", methods=['POST'])
