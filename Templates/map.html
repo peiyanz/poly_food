@@ -38,6 +38,9 @@
         left: 15%;
         z-index: 1;
     }
+    #name{
+        color: red;
+    }
 
     </style>
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.js'></script>
@@ -111,8 +114,21 @@
         var fourth = top_cat[3];
         var fifth = top_cat[4];
         // ['hotels','newamerican','coffee','pizza','mexican']
-        function segColor(c){ return {'mexican':"#90AFC5", "chinese":"#336b87","pizza":"#2A3132", "newamerican": "#763626", "italian": "#46211A", "japanese":"#693D3D" ,"coffee":"#BA5536", "tradamerican":"A43820", "sandwiches":"#505160", "vietnamese":"#68829E", "hotels":"#AEBD38","seafood": "#598234","thai": "#003B46", "delis": "#07575B","burgers":"#66A5AD", "cafes":"#C4DFE6", "bars":"#98DBC6", "indpak": "#F18D9E", "sushi": "#F4CC70", "bakeries": "#DE7A22", "breakfast_brunch":"#5D535E", "hotdogs": "#9A9EAB","catering":"#063852" , 
-            "korean": "#D09683", "grocery": "#C05805", "latin": "#B38867", "foodtrucks":"#CDCDC0" ,"french":"#626D71", "mediterranean": "#32DFA2", "wine_bars":"#4897D8" }[c]; }
+        function segColor(c){ 
+            var colors = d3.scale.category20().range();
+
+            var defaultMap = {'mexican':"#90AFC5", "chinese":"#336b87","pizza":"#2A3132", "newamerican": "#763626", "italian": "#46211A", "japanese":"#693D3D" ,"coffee":"#BA5536", "tradamerican":"A43820", "sandwiches":"#505160", "vietnamese":"#68829E", "hotels":"#AEBD38","seafood": "#598234","thai": "#003B46", "delis": "#07575B","burgers":"#66A5AD", "cafes":"#C4DFE6", "bars":"#98DBC6", "indpak": "#F18D9E", "sushi": "#F4CC70", "bakeries": "#DE7A22", "breakfast_brunch":"#5D535E", "hotdogs": "#9A9EAB","catering":"#063852" , 
+            "korean": "#D09683", "grocery": "#C05805", "latin": "#B38867", "foodtrucks":"#CDCDC0" ,"french":"#626D71", "mediterranean": "#32DFA2", "wine_bars":"#4897D8" };
+            var cats = Object.keys(defaultMap);
+            var newMap = [];
+
+            for (var i = 0; i < cats.length; i++) {
+                newMap[cats[i]] = colors[i];
+            }
+
+            return newMap[c];
+
+        }
     
     // compute total for each state.
         fData.forEach(function(d){ 
@@ -393,8 +409,8 @@
                                 "properties": {
                                     title: "",
                                     description: 
-                                        "<a href=\""+data[0][i]["url"]+"\"target='_blank'>"+data[0][i]["name"]+"</a><p>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Price: " +data[0][i]["price"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br></p>", 
-                                    "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
+                                        "<a href=\""+data[0][i]["url"]+"\"target='_blank'>"+data[0][i]["name"]+"</a><p><img src='"+data[0][i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Price: " +data[0][i]["price"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br></p>",
+                                    // "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
                                     "icon": "restaurant",
                                     "marker-color": '#000000'
                             }
