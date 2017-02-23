@@ -409,7 +409,8 @@
                                 "properties": {
                                     title: "",
                                     description: 
-                                        "<a href=\""+data[0][i]["url"]+"\"target='_blank'>"+data[0][i]["name"]+"</a><p><img src='"+data[0][i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Price: " +data[0][i]["price"]+"<br>Address: "+data[0][i]['address']+"<br>Categories: "+data[0][i]["category"]+"<br></p>",
+                                        "<a href=\""+data[0][i]["url"]+"\"target='_blank'>"+data[0][i]["name"]+"</a><p><img src='"+data[0][i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Price: " +data[0][i]["price"]+"<br>Categories: "+data[0][i]["category"]+"<br></p>",
+                                        // Address: "+data[0][i]['address']+"<br>
                                     // "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
                                     "icon": "restaurant",
                                     "marker-color": '#000000'
@@ -546,6 +547,9 @@
     $('.mapbox-gl-draw_uncombine').hide();//hiding the uncombine
     $('.mapbox-gl-draw_combine').hide(); //hiding the combine
     // mapTooltips.scrollWheelZoom.disable();
+
+    var myIcon=L.divIcon({className: 'elevations', html: '<div class="elevmarker"><div class="markercircle bottomcap"></div><div class="markerline" style="height:'+n.ele*2+'px">'+'</div><div class="markercircle"></div><div class="elevfigure"><strong>'+(n.ele*3.28).toFixed(0)+' ft </strong><span style="font-size:0.9em">'+ pointGrade+'</span></div>'});
+    L.marker([-122.431297,37.773972],{icon: myIcon}).addTo(map)
     </script>
 
 </body>
