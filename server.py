@@ -93,6 +93,8 @@ def check_db():
     db_points = pd.read_sql_query('SELECT * FROM restaurants',con=engine)
 
     [info_json, info] = is_in_polygon(polyY, polyX, db_points)
+    top_count = info['review_count'].quantile(q=0.98)
+    print top_count
     print "checking_db"
     # select the top 7 categories
     top_cat = info.groupby(['category']).size().sort_values(ascending=False).head(7).index.tolist()
@@ -117,7 +119,9 @@ def check_db():
             print i
     final = [['$',l1],['$$',l2],['$$$',l3],['$$$$',l4]]
 
-    return jsonify({"result":info_json, "visualization": final, "top_categoy": top_cat})# pass results back to js
+
+    return jsonify({"result":info_json, "visualization": final, 
+                    "top_categoy": top_cat, "top_count": top_count})# pass results back to js
  
 
 @app.route("/visual.json", methods=['POST'])

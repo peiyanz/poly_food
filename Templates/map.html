@@ -13,6 +13,7 @@
         body { margin:5%; padding:5%; }
         #map { position:absolute; top:10%; bottom:20%; width:90%; left:5%; }
     </style>
+
 </head>
 <body>
 
@@ -27,7 +28,7 @@
     #clear {
         position: absolute;
         top: 93%;
-        left: 45%;
+        left: 35%;
         z-index: 1;
     }
 
@@ -42,18 +43,75 @@
         color: red;
     }
 
+    #tilt {
+        position:absolute; 
+        top: 93%;
+        left: 55%;
+        z-index: 1;
+
+    }
+    #restore {
+        position:absolute; 
+        top: 93%;
+        left: 55%;
+        z-index: 1;
+
+    }
+   /* #color_bar {
+        position:absolute; 
+        top: 70%;
+        left: 1%;
+        z-index: 1;
+    }*/
+    .color_bar {
+      background-color: #fff;
+      border-radius: 3px;
+      bottom: 30px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+      padding: 10px;
+      position: absolute;
+      right: 10px;
+      z-index: 1;
+    }
+
+    .color_bar h4 {
+      margin: 0 0 10px;
+    }
+
+    .color_bar div span {
+      border-radius: 50%;
+      display: inline-block;
+      height: 10px;
+      margin-right: 5px;
+      width: 10px;
+    }
+
     </style>
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.js'></script>
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.css' type='text/css' />
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <div id='map'>
-        <div id='distance' class='distance-container'></div>
+        <!-- <div id='distance' class='distance-container'></div> -->
         <input type=button name="clear" value="Clear" id="clear">
        <!--  <form action='/' method = 'POST'>
             <input type="submit" name="getRestaurant" value="Get Restaurants" id="getRestaurant">
         </form> -->
+        <div class="pin-topleft pad1 modal tilted">
+            <button id="tilt" onclick="tiltMap()">View Restaurant Popularity
+            <button id="restore" onclick="tiltMap()">Hide Restaurant Popularity
+            <!-- <button class="button icon undo col12 tiltcontrols" onclick="restoreMap()">Edit Mode -->
+        </div>
+        <div id='color_bar' class='color_bar'>
+            <h4>Restaurant Stars</h4>
+            <div><span style='background-color: #1B1D84'></span>One Star</div>
+            <div><span style='background-color: #2069AC'></span>Two Stars</div>
+            <div><span style='background-color: #31A8B9'></span>Three Stars</div>
+            <div><span style='background-color: #F08080'></span>Four Stars</div>
+            <div><span style='background-color: #E74C3C'></span>Five Stars</div>
+            <!-- <div><span style='background-color: #D49A66'></span>1614</div> -->
+      </div>
     </div>
-
     <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="static/mapbox-gl-draw.js"></script>
@@ -99,6 +157,7 @@
     <div id='dashboard'></div>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script>
+    $('#restore').hide()
     function dashboard(id, fData){
         var barColor = '#3F90AC';
         // function segColor(c){ return {$:"#588C7E", $$:"#F2E394",$$$:"#8C4646", $$$$: "#D96459", null: "#8C4646"}[c]; }
@@ -336,7 +395,6 @@
 
     }
     </script>
-
     <script>
     mapboxgl.accessToken = '{{token}}';
     // create the map and set the view to be at San Francisco
@@ -350,7 +408,7 @@
     map.doubleClickZoom.disable(); //disable doubleclick to zoom the map
     var geocoder = new MapboxGeocoder({ accessToken: mapboxgl.accessToken });
     map.addControl(geocoder, 'top-right');
-    map.addControl(new mapboxgl.NavigationControl(), 'bottom-right'); //zoom func
+    map.addControl(new mapboxgl.NavigationControl()); //zoom func
 
     // var d = mapboxgl.Draw(); //add the drawing bar on the top left
     // d.addTo(map);
@@ -394,6 +452,7 @@
                 console.log("no response")
             } else {
                 datas = response.visualization
+                top_count = response.top_count
                 top_cat = response.top_categoy
                 visualize(datas, top_cat);
                 var data = JSON.parse("[" + response.result + "]")
@@ -412,19 +471,45 @@
                                         "<a href=\""+data[0][i]["url"]+"\"target='_blank'>"+data[0][i]["name"]+"</a><p><img src='"+data[0][i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Price: " +data[0][i]["price"]+"<br>Categories: "+data[0][i]["category"]+"<br></p>",
                                         // Address: "+data[0][i]['address']+"<br>
                                     // "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
+                                    'review_count': data[0][i]["review_count"],
+                                    'stars': data[0][i]["stars"],
                                     "icon": "restaurant",
                                     "marker-color": '#000000'
                             }
                         }
                     points.push(onePoint);// point every single point to points
                 }
-               
+                
                 var sourceId = new Date().getTime();
                 sourceId = sourceId.toString();
                 sourceIds.push(sourceId);
+                // map.addLayer({
+                //     "id": sourceId,
+                //     "type": "symbol",
+                //     "source": {
+                //         "type": "geojson",
+                //         "data": {
+                //             "type": "FeatureCollection",
+                //             "features": points
+                //         }
+                //     },
+                //     "layout": {
+                //         "icon-image": "{icon}-15",
+                //         "text-field": "{title}",
+                //         "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                //         "text-offset": [0, 0.6],
+                //         "text-anchor": "top"
+                //     },
+                //     "paint": {
+                //         // "text-size": 12,
+                //         "fill-color" : "#ff0000"
+                //     }
+                // });
+                console.log(points)
+                points = 
                 map.addLayer({
                     "id": sourceId,
-                    "type": "symbol",
+                    "type": "circle",
                     "source": {
                         "type": "geojson",
                         "data": {
@@ -432,14 +517,65 @@
                             "features": points
                         }
                     },
-                    "layout": {
-                        "icon-image": "{icon}-15",
-                        "text-field": "{title}",
-                        "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                        "text-offset": [0, 0.6],
-                        "text-anchor": "top"
+                    // "layout": {
+                    //     "icon-image": "{icon}-15",
+                    //     "text-field": "{title}",
+                    //     "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                    //     "text-offset": [0, 0.6],
+                    //     "text-anchor": "top"
+                    // },
+                    "paint": {
+                        'circle-radius': {
+                            // 'base': 1.75,
+                            'property': 'review_count',
+                            'stops': [
+                                        [{'zoom': 10,'value': 1}, 1.5], 
+                                        [{'zoom': 10,'value': top_count}, 2],
+                                        [{'zoom': 22,'value': 1}, 4], 
+                                        [{'zoom': 22,'value': top_count}, 20]
+                                     ]
+                            // "property": "review_count",
+                            // "type": "exponential",
+                            // "stops": [
+                            //     [{ "zoom": 15, "value": 1 }, 10],
+                            //     [{ "zoom": 17, "value": 1 }, 20],
+                            //     [{ "zoom": 20, "value": 1 }, 30],
+                                // [{ "zoom": 15, "value": 10 }, 50],
+                                // [{ "zoom": 15, "value": 10 }, 60],
+                                // [{ "zoom": 15, "value": 10 }, 70],
+                                // [{ "zoom": 15, "value": 100 }, 100],
+                                // [{ "zoom": 17, "value": 100 }, 110],
+                                // [{ "zoom": 20, "value": 100 }, 120]
+                            // ]
+                        },
+                        "circle-opacity": 1,
+                        'circle-color': {
+                            property: "stars" ,
+                            type: 'interval',
+                            stops: [
+                                    // [1, '#D49A66'],
+                                    // [2, '#A29354'],
+                                    // [3, '#738856'],
+                                    // [4, '#50795F'],
+                                    // // [1000, '#416562'],
+                                    // [5, '#e55e5e']
+                                // [1,'#EAAD5F'],
+                                // [2,'#FEB600'],
+                                // [3,'#FF7E2A'],
+                                // [4, '#EE433A'],
+                                // [5, '#C90614']
+                                [1,'#1B1D84'],
+                                [2,'#2069AC'],
+                                [3,'#31A8B9'],
+                                [4, '#F08080'],
+                                [5, '#E74C3C']
+
+                                ]
+
+                        }
                     }
                 });
+
             } 
             allDone.push(1);
             if (allDone.length == numCallBack) {
@@ -488,11 +624,11 @@
 }
 
 
-    map.on('click', function (e) {
+    map.on('mousemove', function (e) {
         var features = map.queryRenderedFeatures(e.point, { layers: sourceIds });
 
         if (!features.length) {
-        return;
+            return;
         }
         var feature = features[0];
         // Populate the popup and set its coordinates based on the feature found.
@@ -500,6 +636,10 @@
             .setLngLat(feature.geometry.coordinates)
             .setHTML(feature.properties.description)
             .addTo(map);
+            // console.log(popup)
+        map.once('mousemove', function (e) {
+            popup.remove();
+        });
     });
 
     // map.on('mousemove', function (e) {
@@ -548,8 +688,22 @@
     $('.mapbox-gl-draw_combine').hide(); //hiding the combine
     // mapTooltips.scrollWheelZoom.disable();
 
-    var myIcon=L.divIcon({className: 'elevations', html: '<div class="elevmarker"><div class="markercircle bottomcap"></div><div class="markerline" style="height:'+n.ele*2+'px">'+'</div><div class="markercircle"></div><div class="elevfigure"><strong>'+(n.ele*3.28).toFixed(0)+' ft </strong><span style="font-size:0.9em">'+ pointGrade+'</span></div>'});
-    L.marker([-122.431297,37.773972],{icon: myIcon}).addTo(map)
+    
+
+    function tiltMap(){
+        map.setPitch(60);
+        $('#tilt').hide();
+        $('#restore').show();
+        $('#restore').on('click',restoreMap)
+        $('#tilt').show();
+    }
+
+    function restoreMap(){
+        map.setPitch(0);
+        $('#restore').hide();
+    }
+
+    
     </script>
 
 </body>
