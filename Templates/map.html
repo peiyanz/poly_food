@@ -125,7 +125,7 @@
     }
     path {  stroke: #fff; }
     path:hover {  opacity:0.9; }
-    rect:hover {  fill:#83AA30; }
+    rect:hover {  fill:#2c7873; }
     .axis {  font: 10px sans-serif; }
     .legend tr{    border-bottom:1px solid grey; }
     .legend tr:first-child{    border-top:1px solid grey; }
@@ -159,13 +159,13 @@
     <script>
     $('#restore').hide()
     function dashboard(id, fData){
-        var barColor = '#3F90AC';
+        var barColor = '#66a5ad';//'#3F90AC';
         // function segColor(c){ return {$:"#588C7E", $$:"#F2E394",$$$:"#8C4646", $$$$: "#D96459", null: "#8C4646"}[c]; }
         
         // // compute total for each state.
         // fData.forEach(function(d){d.total=d.freq.$+d.freq.$$+d.freq.$$$+d.freq.$$$$+d.freq.null;});
 
-        var barColor = '#3F90AC';
+        // var barColor = '#3F90AC';
  
         var first = top_cat[0];
         var second = top_cat[1];
@@ -176,17 +176,17 @@
         function segColor(c){ 
             var colors = d3.scale.category20().range();
 
-            var defaultMap = {'mexican':"#90AFC5", "chinese":"#336b87","pizza":"#2A3132", "newamerican": "#763626", "italian": "#46211A", "japanese":"#693D3D" ,"coffee":"#BA5536", "tradamerican":"A43820", "sandwiches":"#505160", "vietnamese":"#68829E", "hotels":"#AEBD38","seafood": "#598234","thai": "#003B46", "delis": "#07575B","burgers":"#66A5AD", "cafes":"#C4DFE6", "bars":"#98DBC6", "indpak": "#F18D9E", "sushi": "#F4CC70", "bakeries": "#DE7A22", "breakfast_brunch":"#5D535E", "hotdogs": "#9A9EAB","catering":"#063852" , 
+            var defaultMap = {'mexican':"#05668D", "chinese":"#028090","pizza":"#00A896", "newamerican": "#02C39A", "italian": "#F0F3BD", "japanese":"#EC96A4" ,"coffee":"#ACD0c0", "tradamerican":"d09683", "sandwiches":"#ED5752", "vietnamese":"#92aac7", "hotels":"#4897D8","seafood": "#ebdcb2","thai": "#ffccac", "delis": "#f5657","burgers":"#b3de81", "cafes":"#2f496e", "bars":"#755248", "indpak": "#F18D9E", "sushi": "#F4CC70", "bakeries": "#DE7A22", "breakfast_brunch":"#5D535E", "hotdogs": "#9A9EAB","catering":"#063852" , 
             "korean": "#D09683", "grocery": "#C05805", "latin": "#B38867", "foodtrucks":"#CDCDC0" ,"french":"#626D71", "mediterranean": "#32DFA2", "wine_bars":"#4897D8" };
-            var cats = Object.keys(defaultMap);
-            var newMap = [];
+            // var cats = Object.keys(defaultMap);
+            // var newMap = [];
 
-            for (var i = 0; i < cats.length; i++) {
-                newMap[cats[i]] = colors[i];
-            }
-
-            return newMap[c];
-
+            // // for (var i = 0; i < cats.length; i++) {
+            // //     newMap[cats[i]] = colors[i];
+            // // }
+            
+            // return newMap[c];
+            return defaultMap[c]
         }
     
     // compute total for each state.
