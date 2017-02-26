@@ -3,6 +3,7 @@ from constant import app_id, app_secret
 import pandas as pd
 import time
 from sqlalchemy import create_engine
+from restaurant_category import category_dict
 
 
 
@@ -18,6 +19,7 @@ def call_yelp(latitude, longitude, radius, offset):
                           longitude=longitude, radius=radius, 
                           offset=offset,limit=50)
     if results.get("total") > 0:
+        print "totalresults from api call", results.get('total')
         category = []
         location = []
         longitude = []
@@ -56,15 +58,17 @@ def call_yelp(latitude, longitude, radius, offset):
 
         # Importing the existing_data in the memory
         engine = create_engine('postgresql://peiyan:peiyan@localhost:8000/peiyan')
-        db_points = pd.read_sql_query('SELECT * FROM restaurants',con=engine)
+        db_points = pd.read_sql_query('SELECT * FROM restaurant',con=engine)
 
 
         # grab the new data from the api calls that do not exit in the exiting database
         new_data = rest_info[~rest_info["id"].isin(db_points["id"].tolist())]
-        data = new_data.set_index("id")
+        new_data['my_category'] = new_data['category'].map(lambda x: category_dict.get(x, 'other'))
+        new_db = new_data[new_data['my_category'] != 'other']
+        data = new_db.set_index("id")
         try:
             # write new data into database
-            data.to_sql('restaurants', engine, if_exists='append')  
+            data.to_sql('restaurant', engine, if_exists='append')  
         except Exception as err:
             print err                  
         

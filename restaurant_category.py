@@ -1,7 +1,7 @@
 #categories:
 
 
-category = {"afghani": "afghani",
+category_dict = {"afghani": "afghani",
             "african": "african",
             "senegalese": "african",
             "southafrican": "african",

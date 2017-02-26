@@ -161,7 +161,6 @@
     function dashboard(id, fData){
         var barColor = '#66a5ad';//'#3F90AC';
         // function segColor(c){ return {$:"#588C7E", $$:"#F2E394",$$$:"#8C4646", $$$$: "#D96459", null: "#8C4646"}[c]; }
-        
         // // compute total for each state.
         // fData.forEach(function(d){d.total=d.freq.$+d.freq.$$+d.freq.$$$+d.freq.$$$$+d.freq.null;});
 
@@ -176,8 +175,37 @@
         function segColor(c){ 
             var colors = d3.scale.category20().range();
 
-            var defaultMap = {'mexican':"#05668D", "chinese":"#028090","pizza":"#00A896", "newamerican": "#02C39A", "italian": "#F0F3BD", "japanese":"#EC96A4" ,"coffee":"#ACD0c0", "tradamerican":"d09683", "sandwiches":"#ED5752", "vietnamese":"#92aac7", "hotels":"#4897D8","seafood": "#ebdcb2","thai": "#ffccac", "delis": "#f5657","burgers":"#b3de81", "cafes":"#2f496e", "bars":"#755248", "indpak": "#F18D9E", "sushi": "#F4CC70", "bakeries": "#DE7A22", "breakfast_brunch":"#5D535E", "hotdogs": "#9A9EAB","catering":"#063852" , 
-            "korean": "#D09683", "grocery": "#C05805", "latin": "#B38867", "foodtrucks":"#CDCDC0" ,"french":"#626D71", "mediterranean": "#32DFA2", "wine_bars":"#4897D8" };
+            // var defaultMap = {'mexican':"#05668D", "chinese":"#028090","pizza":"#00A896", 
+            //                   "newamerican": "#02C39A", "italian": "#F0F3BD", "japanese":"#EC96A4",
+            //                   "coffee":"#ACD0c0", "tradamerican":"d09683", "sandwiches":"#ED5752", 
+            //                   "vietnamese":"#92aac7", "hotels":"#4897D8","seafood": "#ebdcb2",
+            //                   "thai": "#ffccac", "delis": "#f5657","burgers":"#b3de81", 
+            //                   "cafes":"#2f496e", "bars":"#755248", "indpak": "#F18D9E", 
+            //                   "sushi": "#F4CC70", "bakeries": "#DE7A22", "breakfast_brunch":"#5D535E",
+            //                   "hotdogs": "#9A9EAB","catering":"#063852" ,"korean": "#D09683", 
+            //                   "grocery": "#C05805", "latin": "#B38867", "foodtrucks":"#CDCDC0",
+            //                   "french":"#626D71", "mediterranean": "#32DFA2", "wine_bars":"#4897D8" };
+
+            var defaultMap = {'mexican':"#05668D", 'chinese':"#028090", 'german':"#00A896",
+                              'african':"#02C39A", 'fastfood':"#F0F3BD", 'moroccan':"#F18D9E",
+                              'spanish':"#ACD0c0", 'russian':"d09683", 'cambodian':"#ED5752",
+                              'asianfusion':"#92aac7", 'basque':"#4897D8", 'australian':"#ebdcb2",
+                              'cafes':"#ffccac", 'indian':"#f5657", 'turkish':"#b3de81", 
+                              'newamerican':"#2f496e", 'seafood':"#755248", 'japanese':"#EC96A4",
+                              'bangladeshi':"#F4CC70", 'peruvian':"#DE7A22", 'arabian':"#5D535E",
+                              'brazilian':"#9A9EAB", 'argentine':"#063852", 'belgian':"#D09683",
+                              'tradamerican':"#C05805", 'indonesian':"#B38867", 'hawaiian':"#CDCDC0",
+                              'vegetarian':"#626D71", 'french':"#32DFA2", 'italian':"#4897D8",
+                              'vietnamese':"#b3c2bf", 'thai':"#9068be", 'haitian':"#fae596", 
+                              'scottish':"#b56969", 'caribbean':"#98dafc", 'polish':"#b0aac2", 
+                              'malaysian':"#fccdd3", 'laotian':"#dbc3d0", 'portuguese':"#5e0231", 
+                              'irish':"#e6af4b", 'czech':"#f2cbbc", 'dinner':"#DDE0CD", 
+                              'mediterranean':"#e05151", 'persian':"#ffd452", 'greek':"#73c5e1", 
+                              'honduran':"#0b99bc", 'syrian':"#92DCE0", 'guamanian':"#FF9C5F", 
+                              'hungarian':"#FF8B6C", 'afghani':"#DDA185", 'korean':"#C9E1C1", 
+                              'colombian':"#EAD4E1", 'cajun':"#B5917B", 'latin':"#93C4EF", 
+                              'ukrainian':"#EE7500", 'armenian':"#D69764", 'cuban':"E2E1D9", 
+                              'filipino':"#678D4C", 'british':"#C66C98", 'burmese':"#1F5846"}
             // var cats = Object.keys(defaultMap);
             // var newMap = [];
 
@@ -294,9 +322,31 @@
 
             // Draw the pie slices.
             piesvg.selectAll("path").data(pie(pD)).enter().append("path").attr("d", arc)
-                .each(function(d) { this._current = d; })
+                .each(function(d) { this._current = d;})
                 .style("fill", function(d) { return segColor(d.data.type); })
-                .on("mouseover",mouseover).on("mouseout",mouseout);
+                .on("mouseover",mouseover).on("mouseout",mouseout).on("click",click).on("dblclick",dbclick);
+
+            function click(d){
+                // poly_num = 1;
+                poly_num = d.data.polygon_num
+                console.log(d)
+                hide_ids = Object.values(sourceDict[poly_num])
+                // call the update function of histogram with new data.
+                for (var sd=0; sd<hide_ids.length; sd++) {
+                    map.setLayoutProperty(hide_ids[sd], 'visibility', 'none');
+                }
+                map.setLayoutProperty(sourceDict[poly_num][d.data.type], 'visibility', 'visible');
+                hG.update(fData.map(function(v){ 
+                    return [v.Category,v.freq[d.data.type]];}),segColor(d.data.type));
+            }
+            function dbclick(d){
+                // call the update function of histogram with new data.
+                for (var sd=0; sd<sourceIds.length; sd++) {
+                    map.setLayoutProperty(sourceIds[sd], 'visibility', 'visible');
+                } 
+                hG.update(fData.map(function(v){
+                    return [v.Category,v.total];}), barColor);
+            }
 
             // create function to update pie-chart. This will be used by histogram.
             pC.update = function(nD){
@@ -371,8 +421,9 @@
         }
         
         // calculate total frequency by segment for all state.
-        var tF = top_cat.map(function(d){ 
-            return {type:d, freq: d3.sum(fData.map(function(t){ return t.freq[d];}))}; 
+        var tF = top_cat.map(function(d){
+            return {type:d, freq: d3.sum(fData.map(function(t){ return t.freq[d];})),
+            polygon_num: fData[0].polygon_num}; 
         });    
         
         // calculate total frequency by state for all segment.
@@ -385,10 +436,10 @@
     </script>
 
     <script>
-    function visualize(datas, top_cat) {
+    function visualize(datas, top_cat, polygon_num) {
         var freqData=[];
         for (var m=0; m<datas.length; m++) {
-            freqData.push({Category: datas[m][0], freq: datas[m][1]})
+            freqData.push({Category: datas[m][0], freq: datas[m][1], polygon_num: polygon_num})
         }
 
         dashboard('#dashboard',freqData);
@@ -429,6 +480,7 @@
     }
 
     var sourceIds = [];
+    var sourceDict = new Object;
     function passToServer(event) {
     
         event.preventDefault(); 
@@ -441,150 +493,101 @@
         var allDone = [];
         var done = [];
         var totalCalls = 1*(d.getAll().features.length);
-        $('#getRestaurant').prop('disabled', true); // disable the get restaurant button
         // clear all the points (drawing layers) on the map
         for (var n=sourceIds.length-1; n>=0; n--) {
             map.removeLayer(sourceIds[n]);
         }
         sourceIds = [];
-        function displayPoints(response){
+        sourceDict = {};
+        function displayPoints(response, polygon_num){
             if (response.result == "No result") {
                 console.log("no response")
             } else {
                 datas = response.visualization
                 top_count = response.top_count
                 top_cat = response.top_categoy
-                visualize(datas, top_cat);
+                visualize(datas, top_cat, polygon_num);
+                // data = response.result[0];
+
+                // console.log(data[0])
                 var data = JSON.parse("[" + response.result + "]")
-                var points = [];
-                for(var i=0; i<data[0].length; i++) {
-                    // prepare each point in the correct format
-                    var onePoint = {
-                                "type": "Feature",
-                                "geometry": {
-                                "type": "Point",
-                                "coordinates": [data[0][i]["longitude"], data[0][i]['latitude']]
-                                },
-                                "properties": {
-                                    title: "",
-                                    description: 
-                                        "<a href=\""+data[0][i]["url"]+"\"target='_blank'>"+data[0][i]["name"]+"</a><p><img src='"+data[0][i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+data[0][i]["review_count"]+"<br>Stars: "+data[0][i]["stars"]+"<br>Price: " +data[0][i]["price"]+"<br>Categories: "+data[0][i]["category"]+"<br></p>",
-                                        // Address: "+data[0][i]['address']+"<br>
-                                    // "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
-                                    'review_count': data[0][i]["review_count"],
-                                    'stars': data[0][i]["stars"],
-                                    "icon": "restaurant",
-                                    "marker-color": '#000000'
+
+                for (var layer_num = 0; layer_num < data.length ; layer_num++) {
+                    layers_points = data[layer_num]
+                    var points = [];
+                    for(var i=0; i<layers_points.length; i++) {
+                        // prepare each point in the correct format
+                        var onePoint = {
+                                    "type": "Feature",
+                                    "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [layers_points[i]["longitude"], layers_points[i]['latitude']]
+                                    },
+                                    "properties": {
+                                        title: "",
+                                        description: 
+                                            "<a href=\""+layers_points[i]["url"]+"\"target='_blank'>"+layers_points[i]["name"]+"</a><p><img src='"+layers_points[i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+layers_points[i]["review_count"]+"<br>Stars: "+layers_points[i]["stars"]+"<br>Price: " +layers_points[i]["price"]+"<br>Categories: "+layers_points[i]["category"]+"<br></p>",
+                                            // Address: "+data[0][i]['address']+"<br>
+                                        // "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
+                                        'review_count': layers_points[i]["review_count"],
+                                        'stars': layers_points[i]["stars"],
+                                        "icon": "restaurant",
+                                        "marker-color": '#000000'
+                                }
+                            }
+                        points.push(onePoint);// point every single point to points
+                    }
+                    
+                    var sourceId = new Date().getTime();
+                    sourceId = sourceId.toString();
+                    sourceIds.push(sourceId);
+                    if (sourceDict[polygon_num] != undefined) {
+                        sourceDict[polygon_num][layers_points[0]["my_category"]] = sourceId
+                    }
+                    else {
+                        sourceDict[polygon_num] = new Object;
+                        sourceDict[polygon_num][layers_points[0]["my_category"]] = sourceId
+                    }
+                    map.addLayer({
+                        "id": sourceId,
+                        "type": "circle",
+                        "source": {
+                            "type": "geojson",
+                            "data": {
+                                "type": "FeatureCollection",
+                                "features": points
+                            }
+                        },
+                        "paint": {
+                            'circle-radius': {
+                                'property': 'review_count',
+                                'stops': [
+                                            [{'zoom': 10,'value': 1}, 1.5], 
+                                            [{'zoom': 10,'value': top_count}, 2],
+                                            [{'zoom': 22,'value': 1}, 4], 
+                                            [{'zoom': 22,'value': top_count}, 20]
+                                         ]
+                            },
+                            "circle-opacity": 1,
+                            'circle-color': {
+                                property: "stars" ,
+                                type: 'interval',
+                                stops: [
+                                        [1,'#1B1D84'],
+                                        [2,'#2069AC'],
+                                        [3,'#31A8B9'],
+                                        [4, '#F08080'],
+                                        [5, '#E74C3C']
+                                    ]
+
                             }
                         }
-                    points.push(onePoint);// point every single point to points
-                }
-                
-                var sourceId = new Date().getTime();
-                sourceId = sourceId.toString();
-                sourceIds.push(sourceId);
-                // map.addLayer({
-                //     "id": sourceId,
-                //     "type": "symbol",
-                //     "source": {
-                //         "type": "geojson",
-                //         "data": {
-                //             "type": "FeatureCollection",
-                //             "features": points
-                //         }
-                //     },
-                //     "layout": {
-                //         "icon-image": "{icon}-15",
-                //         "text-field": "{title}",
-                //         "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                //         "text-offset": [0, 0.6],
-                //         "text-anchor": "top"
-                //     },
-                //     "paint": {
-                //         // "text-size": 12,
-                //         "fill-color" : "#ff0000"
-                //     }
-                // });
-                console.log(points)
-                points = 
-                map.addLayer({
-                    "id": sourceId,
-                    "type": "circle",
-                    "source": {
-                        "type": "geojson",
-                        "data": {
-                            "type": "FeatureCollection",
-                            "features": points
-                        }
-                    },
-                    // "layout": {
-                    //     "icon-image": "{icon}-15",
-                    //     "text-field": "{title}",
-                    //     "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                    //     "text-offset": [0, 0.6],
-                    //     "text-anchor": "top"
-                    // },
-                    "paint": {
-                        'circle-radius': {
-                            // 'base': 1.75,
-                            'property': 'review_count',
-                            'stops': [
-                                        [{'zoom': 10,'value': 1}, 1.5], 
-                                        [{'zoom': 10,'value': top_count}, 2],
-                                        [{'zoom': 22,'value': 1}, 4], 
-                                        [{'zoom': 22,'value': top_count}, 20]
-                                     ]
-                            // "property": "review_count",
-                            // "type": "exponential",
-                            // "stops": [
-                            //     [{ "zoom": 15, "value": 1 }, 10],
-                            //     [{ "zoom": 17, "value": 1 }, 20],
-                            //     [{ "zoom": 20, "value": 1 }, 30],
-                                // [{ "zoom": 15, "value": 10 }, 50],
-                                // [{ "zoom": 15, "value": 10 }, 60],
-                                // [{ "zoom": 15, "value": 10 }, 70],
-                                // [{ "zoom": 15, "value": 100 }, 100],
-                                // [{ "zoom": 17, "value": 100 }, 110],
-                                // [{ "zoom": 20, "value": 100 }, 120]
-                            // ]
-                        },
-                        "circle-opacity": 1,
-                        'circle-color': {
-                            property: "stars" ,
-                            type: 'interval',
-                            stops: [
-                                    // [1, '#D49A66'],
-                                    // [2, '#A29354'],
-                                    // [3, '#738856'],
-                                    // [4, '#50795F'],
-                                    // // [1000, '#416562'],
-                                    // [5, '#e55e5e']
-                                // [1,'#EAAD5F'],
-                                // [2,'#FEB600'],
-                                // [3,'#FF7E2A'],
-                                // [4, '#EE433A'],
-                                // [5, '#C90614']
-                                [1,'#1B1D84'],
-                                [2,'#2069AC'],
-                                [3,'#31A8B9'],
-                                [4, '#F08080'],
-                                [5, '#E74C3C']
+                    });
 
-                                ]
-
-                        }
-                    }
-                });
-
-            } 
+                } 
+            }
             allDone.push(1);
             if (allDone.length == numCallBack) {
-                //  var para = {
-                //         'data': JSON.stringify(visualDatapoints)
-                // };
-                // $.post("/visual.json", para, visualize)
-                // allDone = []
-                // $('#getRestaurant').prop('disabled', false);
             }
             done.push(1)
             if (done.length == totalCalls) {
@@ -609,12 +612,16 @@
             'data': JSON.stringify(coordinates_list)
         };
         // Ajax call to check db
-        $.post("/db.json", parameters, displayPoints)
+        $.post("/db.json", parameters, 
+                function (response) {displayPoints(response,j+1)})
         for (var k=0; k<numCallBack; k++) {
             var parameter = {
                 'data': JSON.stringify(coordinates_list),
                 'offset':k*50
             };
+            // Ajax call to call yelp api
+            // $.post("/", parameter, 
+            //        function (response) {displayPoints(response, j+1)})
         }
     }    
         
@@ -636,16 +643,10 @@
             .setLngLat(feature.geometry.coordinates)
             .setHTML(feature.properties.description)
             .addTo(map);
-            // console.log(popup)
         map.once('mousemove', function (e) {
             popup.remove();
         });
     });
-
-    // map.on('mousemove', function (e) {
-    // var features = map.queryRenderedFeatures(e.point, { layers: sourceIds });
-    // map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
-    // });
 
     var isMouseMove;
     var canvas = map.getCanvasContainer();
@@ -708,4 +709,6 @@
 
 </body>
 <a href="http://www.freepik.com/free-photos-vectors/background"></a>
+<a href ='http://bl.ocks.org/NPashaP/96447623ef4d342ee09b'></a>
+<!-- d3 dashboard visualization credit to the author -->
 </html>
