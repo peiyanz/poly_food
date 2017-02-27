@@ -25,12 +25,7 @@
         z-index: 1;
     }*/
 
-    #clear {
-        position: absolute;
-        top: 93%;
-        left: 35%;
-        z-index: 1;
-    }
+    
 
     #dashboard {
         position: absolute;
@@ -43,17 +38,31 @@
         color: red;
     }
 
-    #tilt {
-        position:absolute; 
-        top: 93%;
-        left: 55%;
-        z-index: 1;
-
-    }
     #restore {
         position:absolute; 
         top: 93%;
-        left: 55%;
+        left: 40%;
+        z-index: 1;
+
+    }
+    
+    #clear {
+        position: absolute;
+        top: 93%;
+        left: 30%;
+        z-index: 1;
+    }
+    #tilt {
+        position:absolute; 
+        top: 93%;
+        left: 40%;
+        z-index: 1;
+
+    }
+    #kmean_clustering{
+        position:absolute; 
+        top: 93%;
+        left: 50%;
         z-index: 1;
 
     }
@@ -94,12 +103,13 @@
     <div id='map'>
         <!-- <div id='distance' class='distance-container'></div> -->
         <input type=button name="clear" value="Clear" id="clear">
+        <input type=button name="kmean_clustering" value="View KMean Clustering" id="kmean_clustering">
        <!--  <form action='/' method = 'POST'>
             <input type="submit" name="getRestaurant" value="Get Restaurants" id="getRestaurant">
         </form> -->
         <div class="pin-topleft pad1 modal tilted">
-            <button id="tilt" onclick="tiltMap()">View Restaurant Popularity
-            <button id="restore" onclick="tiltMap()">Hide Restaurant Popularity
+            <button id="tilt" onclick="tiltMap()">Tilt Map
+            <button id="restore" onclick="tiltMap()">Flat Map
             <!-- <button class="button icon undo col12 tiltcontrols" onclick="restoreMap()">Edit Mode -->
         </div>
         <div id='color_bar' class='color_bar'>
@@ -495,6 +505,7 @@
     }
 
     function passToServerNoCB() {
+        $('#color_bar').show()
         $('#dashboard').empty()
         var numCallBack = 1; // 1 database call, 3 apis
         var allDone = [];
@@ -533,7 +544,7 @@
                                     "properties": {
                                         title: "",
                                         description: 
-                                            "<a href=\""+layers_points[i]["url"]+"\"target='_blank'>"+layers_points[i]["name"]+"</a><p><img src='"+layers_points[i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+layers_points[i]["review_count"]+"<br>Stars: "+layers_points[i]["stars"]+"<br>Price: " +layers_points[i]["price"]+"<br>Categories: "+layers_points[i]["category"]+"<br></p>",
+                                            "<a href=\""+layers_points[i]["url"]+"\"target='_blank'>"+layers_points[i]["name"]+"</a><p><img src='"+layers_points[i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+layers_points[i]["review_count"]+"<br>Stars: "+layers_points[i]["stars"]+"<br>Price: " +layers_points[i]["price"]+"<br>Categories: "+layers_points[i]["my_category"]+"<br></p>",
                                             // Address: "+data[0][i]['address']+"<br>
                                         // "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
                                         'review_count': layers_points[i]["review_count"],
@@ -694,6 +705,7 @@
     $('.mapbox-gl-draw_point').hide(); //hiding the draw points
     $('.mapbox-gl-draw_uncombine').hide();//hiding the uncombine
     $('.mapbox-gl-draw_combine').hide(); //hiding the combine
+    $('#color_bar').hide()
     // mapTooltips.scrollWheelZoom.disable();
 
     
@@ -710,7 +722,100 @@
         map.setPitch(0);
         $('#restore').hide();
     }
+    var cluser_sourceIds = []
+    $("#kmean_clustering").on('click', get_clusters)
+    function get_clusters() {
+        $.post("/kmean.json", "", display_cluster)
 
+        function display_cluster (response) {
+            var cluster_data = JSON.parse("[" + response.cluster + "]")
+           
+            console.log(cluster_data)
+            // for (var cluster_num = 0; cluster_num < cluster_data.length ; cluster_num++) {
+            //         cluster_points = cluster_data[cluster_num]
+                    var points = [];
+                    // console.log(cluster_points)
+                    for(var i=0; i<cluster_data[0].length; i++) {
+                        // prepare each point in the correct format
+                        var onePoint = {
+                                    "type": "Feature",
+                                    "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [cluster_data[0][i]["longitude"], cluster_data[0][i]['latitude']]
+                                    },
+                                    "properties": {
+                                            title: "",
+                                            description: 
+                                                "<a href=\""+cluster_data[0][i]["url"]+"\"target='_blank'>"+cluster_data[0][i]["name"]+"</a><p><img src='"+cluster_data[0][i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+cluster_data[0][i]["review_count"]+"<br>Stars: "+cluster_data[0][i]["stars"]+"<br>Price: " +cluster_data[0][i]["price"]+"<br>Categories: "+cluster_data[0][i]["my_category"]+"<br></p>",
+                                            'clusterings': cluster_data[0][i]["clustering"],
+                                    }
+                                    
+                            }
+                        
+                        // console.log(cluster_data[0][i]["clustering"])
+                        points.push(onePoint);// point every single point to points
+                    }
+                    
+                    var cluser_sourceId = new Date().getTime();
+                    cluser_sourceId = cluser_sourceId.toString();
+                    cluser_sourceIds.push(cluser_sourceId)
+                    map.addLayer({
+                        "id": cluser_sourceId,
+                        "type": "circle",
+                        "source": {
+                            "type": "geojson",
+                            "data": {
+                                "type": "FeatureCollection",
+                                "features": points
+                            }
+                        },
+                        'circle-radius': {
+                            'base': 0.75,
+                            // 'stops': [[12, 2], [22, 180]]s
+                        },
+                        "paint": {
+                            "circle-opacity": 1,
+                            'circle-color': {
+                                property: "clusterings" ,
+                                type: 'categorical',
+                                stops: [
+                                        ["0",'#F1C40F'],
+                                        ["1",'#884EA0'],
+                                        ["2",'#2471A3'],
+                                        ["3", '#17A589'],
+                                        ["4", '#C0392B'],
+                                        // ["5",'#E67E22'],
+                                        // ["6",'#707B7C'],
+                                        // ["7",'#2E4053'],
+                                        // ["8", '#EEAA7B'],
+                                        // ["9", '#A239CA']
+                                    ]
+
+                            }
+                        }
+                    });
+
+                 
+            // }
+
+        }
+    }
+    map.on('mousemove', function (e) {
+        var features = map.queryRenderedFeatures(e.point, { layers: cluser_sourceIds });
+
+        if (!features.length) {
+            return;
+        }
+        var feature = features[0];
+        // Populate the popup and set its coordinates based on the feature found.
+        var popup = new mapboxgl.Popup()
+            .setLngLat(feature.geometry.coordinates)
+            .setHTML(feature.properties.description)
+            .addTo(map);
+        map.once('mousemove', function (e) {
+            popup.remove();
+        });
+    });
     
     </script>
 

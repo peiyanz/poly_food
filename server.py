@@ -9,6 +9,7 @@ from math import sin, cos, sqrt, atan2, radians
 from sqlalchemy import create_engine
 import pandas as pd
 from collections import OrderedDict
+from KMean_Cluster import kmean_clusters
 
 
 app = Flask(__name__) 
@@ -207,15 +208,29 @@ def check_db():
 
     
 
-@app.route("/visual.json", methods=['POST'])
-def visual_datapoints():
+# @app.route("/visual.json", methods=['POST'])
+# def visual_datapoints():
 
-    category = json.loads(request.form.get("data"))
-    top_five = pd.DataFrame(category).sum().sort_values(ascending=False).head(7).index.tolist()
-    # {Category: 'Chinese', freq:{one_star:20, two_star: 30, three_star:45, four_star:34, five_star:34}}
-    info_ = [[str(cat_dic), category[cat_dic]] for cat_dic in top_five]
-    # print info_
-    return jsonify({"data": info_ })
+#     category = json.loads(request.form.get("data"))
+#     top_five = pd.DataFrame(category).sum().sort_values(ascending=False).head(7).index.tolist()
+#     # {Category: 'Chinese', freq:{one_star:20, two_star: 30, three_star:45, four_star:34, five_star:34}}
+#     info_ = [[str(cat_dic), category[cat_dic]] for cat_dic in top_five]
+#     # print info_
+#     return jsonify({"data": info_ })
+
+@app.route('/kmean.json', methods=['POST'])
+def kmean():
+    clusters = kmean_clusters()
+    clusters = clusters.to_json(orient = "records")
+    # cluster1 = clusters[clusters["clustering"] == "0"].to_json(orient = "records")
+    # cluster2 = clusters[clusters["clustering"] == "1"].to_json(orient = "records")
+    # cluster3 = clusters[clusters["clustering"] == "2"].to_json(orient = "records")
+    # cluster4 = clusters[clusters["clustering"] == "3"].to_json(orient = "records")
+    # cluster5 = clusters[clusters["clustering"] == "4"].to_json(orient = "records")
+    
+
+    return jsonify({'cluster': [clusters]})
+
 
 
 if __name__ == "__main__":
