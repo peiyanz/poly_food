@@ -171,6 +171,9 @@
         var third = top_cat[2];
         var fourth = top_cat[3];
         var fifth = top_cat[4];
+        var sixth = top_cat[5];
+        var seventh = top_cat[6];
+ 
         // ['hotels','newamerican','coffee','pizza','mexican']
         function segColor(c){ 
             var colors = d3.scale.category20().range();
@@ -219,7 +222,8 @@
     
     // compute total for each state.
         fData.forEach(function(d){ 
-            d.total=d.freq[first]+d.freq[second]+d.freq[third]+d.freq[fourth]+d.freq[fifth];});
+            // console.log(d)
+            d.total=d.freq[first]+d.freq[second]+d.freq[third]+d.freq[fourth]+d.freq[fifth]+d.freq[sixth]+d.freq[seventh];});
         
         // function to handle histogram.
         function histoGram(fD){
@@ -269,7 +273,8 @@
             function mouseover(d){  // utility function to be called on mouseover.
                 // filter for selected state.
                 var st = fData.filter(function(s){ return s.Category == d[0];})[0],
-                    nD = d3.keys(st.freq).map(function(s){ return {type:s, freq:st.freq[s]};});
+                    // nD = d3.keys(st.freq).map(function(s){ return {type:s, freq:st.freq[s]};});
+                    nD = top_cat.map(function(s){ return {type:s, freq:st.freq[s]};});
                    
                 // call update functions of pie-chart and legend.    
                 pC.update(nD);
@@ -329,7 +334,7 @@
             function click(d){
                 // poly_num = 1;
                 poly_num = d.data.polygon_num
-                console.log(d)
+                // console.log(d)
                 hide_ids = Object.values(sourceDict[poly_num])
                 // call the update function of histogram with new data.
                 for (var sd=0; sd<hide_ids.length; sd++) {
@@ -378,7 +383,6 @@
         // function to handle legend.
         function legend(lD){
             var leg = {};
-                
             // create table for legend.
             var legend = d3.select(id).append("table").attr('class','legend');
             
@@ -422,8 +426,11 @@
         
         // calculate total frequency by segment for all state.
         var tF = top_cat.map(function(d){
-            return {type:d, freq: d3.sum(fData.map(function(t){ return t.freq[d];})),
-            polygon_num: fData[0].polygon_num}; 
+            return {
+                type:d, 
+                freq: d3.sum(fData.map(function(t){ return t.freq[d];})),
+                polygon_num: fData[0].polygon_num
+            }; 
         });    
         
         // calculate total frequency by state for all segment.
@@ -503,9 +510,9 @@
             if (response.result == "No result") {
                 console.log("no response")
             } else {
-                datas = response.visualization
-                top_count = response.top_count
-                top_cat = response.top_categoy
+                datas = response.visualization;
+                top_count = response.top_count;
+                top_cat = response.top_category;
                 visualize(datas, top_cat, polygon_num);
                 // data = response.result[0];
 

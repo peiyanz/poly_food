@@ -8,6 +8,7 @@ from data import is_in_polygon
 from math import sin, cos, sqrt, atan2, radians
 from sqlalchemy import create_engine
 import pandas as pd
+from collections import OrderedDict
 
 
 app = Flask(__name__) 
@@ -102,7 +103,12 @@ def dis_restaurants():
                 l4[i[1]] = dict1[i]
             # else:
             #     print i
-        final = [['$',l1],['$$',l2],['$$$',l3],['$$$$',l4]]
+        ord_l1 = OrderedDict((cat, l1[cat]) for cat in top_cat)
+        ord_l2 = OrderedDict((cat, l2[cat]) for cat in top_cat)
+        ord_l3 = OrderedDict((cat, l3[cat]) for cat in top_cat)
+        ord_l4 = OrderedDict((cat, l4[cat]) for cat in top_cat)
+        final = [['$',ord_l1],['$$',ord_l2],['$$$',ord_l3],['$$$$',ord_l4]]
+        print final
 
         cat1 = info[info['my_category'] == top_cat[0]].to_json(orient = "records")
         cat2 = info[info['my_category'] == top_cat[1]].to_json(orient = "records")
@@ -169,7 +175,13 @@ def check_db():
             l4[i[1]] = dict1[i]
         # else:
         #     print i
-    final = [['$',l1],['$$',l2],['$$$',l3],['$$$$',l4]]
+
+    ord_l1 = OrderedDict((cat, l1[cat]) for cat in top_cat)
+    ord_l2 = OrderedDict((cat, l2[cat]) for cat in top_cat)
+    ord_l3 = OrderedDict((cat, l3[cat]) for cat in top_cat)
+    ord_l4 = OrderedDict((cat, l4[cat]) for cat in top_cat)
+    final = [['$',ord_l1],['$$',ord_l2],['$$$',ord_l3],['$$$$',ord_l4]]
+    print final
 
     cat1 = info[info['my_category'] == top_cat[0]].to_json(orient = "records")
     cat2 = info[info['my_category'] == top_cat[1]].to_json(orient = "records")
@@ -188,8 +200,9 @@ def check_db():
     # return jsonify({"result":info_json, "visualization": final, 
     #                 "top_categoy": top_cat, "top_count": top_count})# pass results back to js
     # pass results back to js
+    print top_cat
     return jsonify({"result":[cat1, cat2, cat3, cat4, cat5, cat6, cat7, cat8], 
-                    "visualization": final,"top_categoy": top_cat, 
+                    "visualization": final,"top_category": top_cat, 
                     "top_count": top_count})
 
     
