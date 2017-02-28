@@ -76,13 +76,8 @@ def dis_restaurants():
     if api_points.empty: 
         return jsonify({"result":"No result"})
     else:
-        # print "calling_yelp"
-        # is_in_polygon to filter out points that not live inside of polygon
         info = is_in_polygon(polyY, polyX, api_points)
-    
         top_count = info['review_count'].quantile(q=0.98)
-        # print top_count
-        # print "checking_db"
         # select the top 7 categories
         top_cat = info.groupby(['my_category']).size().sort_values(ascending=False).head(7).index.tolist()
         data_top_cat = info[info['my_category'].isin(top_cat)].groupby(['price','my_category']).size()
@@ -109,7 +104,6 @@ def dis_restaurants():
         ord_l3 = OrderedDict((cat, l3[cat]) for cat in top_cat)
         ord_l4 = OrderedDict((cat, l4[cat]) for cat in top_cat)
         final = [['$',ord_l1],['$$',ord_l2],['$$$',ord_l3],['$$$$',ord_l4]]
-        # print final
 
         cat1 = info[info['my_category'] == top_cat[0]].to_json(orient = "records")
         cat2 = info[info['my_category'] == top_cat[1]].to_json(orient = "records")
@@ -120,22 +114,9 @@ def dis_restaurants():
         cat7 = info[info['my_category'] == top_cat[6]].to_json(orient = "records")
         cat8 = info[~info['my_category'].isin(top_cat)].to_json(orient = "records")
 
-
-
-    # info_json = info.to_json(orient = "records")
-
-
-    # return jsonify({"result":info_json, "visualization": final, 
-    #                 "top_categoy": top_cat, "top_count": top_count})# pass results back to js
-    # pass results back to js
     return jsonify({"result":[cat1, cat2, cat3, cat4, cat5, cat6, cat7, cat8], 
                     "visualization": final,"top_categoy": top_cat, 
                     "top_count": top_count})
-
-
-
-        # info_json = info.to_json(orient = "records")
-        # return jsonify({"result":info_json}) # pass results back to js
 
 
 @app.route("/db.json", methods=['POST'])
@@ -153,9 +134,7 @@ def check_db():
     info = is_in_polygon(polyY, polyX, db_points)
     
     top_count = info['review_count'].quantile(q=0.98)
-    # print top_count
-    # print "checking_db"
-    # select the top 7 categories
+
     top_cat = info.groupby(['my_category']).size().sort_values(ascending=False).head(7).index.tolist()
     data_top_cat = info[info['my_category'].isin(top_cat)].groupby(['price','my_category']).size()
     dict1 = data_top_cat.to_dict()
@@ -174,15 +153,15 @@ def check_db():
             l3[i[1]] = dict1[i]
         elif str(i[0]) == '$$$$':
             l4[i[1]] = dict1[i]
-        # else:
-        #     print i
 
     ord_l1 = OrderedDict((cat, l1[cat]) for cat in top_cat)
     ord_l2 = OrderedDict((cat, l2[cat]) for cat in top_cat)
     ord_l3 = OrderedDict((cat, l3[cat]) for cat in top_cat)
     ord_l4 = OrderedDict((cat, l4[cat]) for cat in top_cat)
     final = [['$',ord_l1],['$$',ord_l2],['$$$',ord_l3],['$$$$',ord_l4]]
-    # print final
+
+    if len(top_cat) < 7:
+        return none
 
     cat1 = info[info['my_category'] == top_cat[0]].to_json(orient = "records")
     cat2 = info[info['my_category'] == top_cat[1]].to_json(orient = "records")
@@ -193,43 +172,51 @@ def check_db():
     cat7 = info[info['my_category'] == top_cat[6]].to_json(orient = "records")
     cat8 = info[~info['my_category'].isin(top_cat)].to_json(orient = "records")
 
-
-
-    # info_json = info.to_json(orient = "records")
-
-
-    # return jsonify({"result":info_json, "visualization": final, 
-    #                 "top_categoy": top_cat, "top_count": top_count})# pass results back to js
-    # pass results back to js
-    # print top_cat
     return jsonify({"result":[cat1, cat2, cat3, cat4, cat5, cat6, cat7, cat8], 
                     "visualization": final,"top_category": top_cat, 
                     "top_count": top_count})
 
-    
-
-# @app.route("/visual.json", methods=['POST'])
-# def visual_datapoints():
-
-#     category = json.loads(request.form.get("data"))
-#     top_five = pd.DataFrame(category).sum().sort_values(ascending=False).head(7).index.tolist()
-#     # {Category: 'Chinese', freq:{one_star:20, two_star: 30, three_star:45, four_star:34, five_star:34}}
-#     info_ = [[str(cat_dic), category[cat_dic]] for cat_dic in top_five]
-#     # print info_
-#     return jsonify({"data": info_ })
 
 @app.route('/kmean.json', methods=['POST'])
 def kmean():
+    """Visualize KMean Clusterings"""
     clusters = kmean_clusters()
-    clusters = clusters.to_json(orient = "records")
-    # cluster1 = clusters[clusters["clustering"] == "0"].to_json(orient = "records")
-    # cluster2 = clusters[clusters["clustering"] == "1"].to_json(orient = "records")
-    # cluster3 = clusters[clusters["clustering"] == "2"].to_json(orient = "records")
-    # cluster4 = clusters[clusters["clustering"] == "3"].to_json(orient = "records")
-    # cluster5 = clusters[clusters["clustering"] == "4"].to_json(orient = "records")
-    
+    total_cluster = clusters.to_json(orient = "records")
 
-    return jsonify({'cluster': [clusters]})
+    cluster_layers = []
+    top_cats = []
+
+    for z in range(0,4):
+        c_layer = clusters[clusters['clustering'] == z]
+        top_count = c_layer['review_count'].quantile(q=0.98)
+        top_cat = c_layer.groupby(['my_category']).size().sort_values(ascending=False).head(7).index.tolist()
+        data_top_cat = c_layer[c_layer['my_category'].isin(top_cat)].groupby(['price','my_category']).size()
+        dict1 = data_top_cat.to_dict()
+        l1,l2,l3,l4 = {}, {}, {}, {}
+        for j in top_cat:
+            l1[j] = 0
+            l2[j] = 0
+            l3[j] = 0
+            l4[j] = 0
+        for i in dict1:
+            if str(i[0]) == '$':
+                l1[i[1]] = dict1[i]
+            elif str(i[0]) == '$$':
+                l2[i[1]] = dict1[i]
+            elif str(i[0]) == '$$$':
+                l3[i[1]] = dict1[i]
+            elif str(i[0]) == '$$$$':
+                l4[i[1]] = dict1[i]
+        
+        final = [['$',l1],['$$',l2],['$$$',l3],['$$$$',l4]]
+        top_cats.append(top_cat)
+        cluster_layers.append(final)
+
+    # clusters = clusters.to_json(orient = "records")
+
+    return jsonify({'cluster': total_cluster,
+                    'cluster_layer': cluster_layers,
+                    'top_cat': top_cats})
 
 
 
