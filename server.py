@@ -109,7 +109,7 @@ def dis_restaurants():
         ord_l3 = OrderedDict((cat, l3[cat]) for cat in top_cat)
         ord_l4 = OrderedDict((cat, l4[cat]) for cat in top_cat)
         final = [['$',ord_l1],['$$',ord_l2],['$$$',ord_l3],['$$$$',ord_l4]]
-        print final
+        # print final
 
         cat1 = info[info['my_category'] == top_cat[0]].to_json(orient = "records")
         cat2 = info[info['my_category'] == top_cat[1]].to_json(orient = "records")
@@ -182,7 +182,7 @@ def check_db():
     ord_l3 = OrderedDict((cat, l3[cat]) for cat in top_cat)
     ord_l4 = OrderedDict((cat, l4[cat]) for cat in top_cat)
     final = [['$',ord_l1],['$$',ord_l2],['$$$',ord_l3],['$$$$',ord_l4]]
-    print final
+    # print final
 
     cat1 = info[info['my_category'] == top_cat[0]].to_json(orient = "records")
     cat2 = info[info['my_category'] == top_cat[1]].to_json(orient = "records")
@@ -201,7 +201,7 @@ def check_db():
     # return jsonify({"result":info_json, "visualization": final, 
     #                 "top_categoy": top_cat, "top_count": top_count})# pass results back to js
     # pass results back to js
-    print top_cat
+    # print top_cat
     return jsonify({"result":[cat1, cat2, cat3, cat4, cat5, cat6, cat7, cat8], 
                     "visualization": final,"top_category": top_cat, 
                     "top_count": top_count})

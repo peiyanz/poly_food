@@ -18,15 +18,6 @@
 <body>
 
     <style>
- /*   #getRestaurant {
-        position: absolute;
-        top: 93%;
-        left: 50%;
-        z-index: 1;
-    }*/
-
-    
-
     #dashboard {
         position: absolute;
         top: 80%;
@@ -34,6 +25,7 @@
         left: 15%;
         z-index: 1;
     }
+
     #name{
         color: red;
     }
@@ -45,13 +37,14 @@
         z-index: 1;
 
     }
-    
+
     #clear {
         position: absolute;
         top: 93%;
         left: 30%;
         z-index: 1;
     }
+
     #tilt {
         position:absolute; 
         top: 93%;
@@ -59,28 +52,33 @@
         z-index: 1;
 
     }
-    #kmean_clustering{
+
+    #ViewKMeanCluster{
+        position:absolute; 
+        top: 93%;
+        left: 50%;
+        z-index: 1;
+    }
+
+    #HideKMeanCluster{
         position:absolute; 
         top: 93%;
         left: 50%;
         z-index: 1;
 
-    }
-   /* #color_bar {
-        position:absolute; 
-        top: 70%;
-        left: 1%;
-        z-index: 1;
-    }*/
+    } 
+
     .color_bar {
       background-color: #fff;
       border-radius: 3px;
-      bottom: 30px;
+      /*bottom: 30px;*/
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
       font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
       padding: 10px;
       position: absolute;
-      right: 10px;
+      /*right: 10px;*/
+      top: 55%;
+      left: 85%;
       z-index: 1;
     }
 
@@ -101,16 +99,12 @@
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.css' type='text/css' />
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <div id='map'>
-        <!-- <div id='distance' class='distance-container'></div> -->
         <input type=button name="clear" value="Clear" id="clear">
-        <input type=button name="kmean_clustering" value="View KMean Clustering" id="kmean_clustering">
-       <!--  <form action='/' method = 'POST'>
-            <input type="submit" name="getRestaurant" value="Get Restaurants" id="getRestaurant">
-        </form> -->
+        <button id="ViewKMeanCluster" onclick="get_clusters()">View KMean Cluster
+        <button id="HideKMeanCluster" onclick="hide_clusters()">Hide KMean Cluster
         <div class="pin-topleft pad1 modal tilted">
             <button id="tilt" onclick="tiltMap()">Tilt Map
             <button id="restore" onclick="tiltMap()">Flat Map
-            <!-- <button class="button icon undo col12 tiltcontrols" onclick="restoreMap()">Edit Mode -->
         </div>
         <div id='color_bar' class='color_bar'>
             <h4>Restaurant Stars</h4>
@@ -119,8 +113,7 @@
             <div><span style='background-color: #31A8B9'></span>Three Stars</div>
             <div><span style='background-color: #F08080'></span>Four Stars</div>
             <div><span style='background-color: #E74C3C'></span>Five Stars</div>
-            <!-- <div><span style='background-color: #D49A66'></span>1614</div> -->
-      </div>
+        </div>
     </div>
     <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
     <script src="http://code.jquery.com/jquery.js"></script>
@@ -169,13 +162,7 @@
     <script>
     $('#restore').hide()
     function dashboard(id, fData){
-        var barColor = '#66a5ad';//'#3F90AC';
-        // function segColor(c){ return {$:"#588C7E", $$:"#F2E394",$$$:"#8C4646", $$$$: "#D96459", null: "#8C4646"}[c]; }
-        // // compute total for each state.
-        // fData.forEach(function(d){d.total=d.freq.$+d.freq.$$+d.freq.$$$+d.freq.$$$$+d.freq.null;});
-
-        // var barColor = '#3F90AC';
- 
+        var barColor = '#66a5ad';
         var first = top_cat[0];
         var second = top_cat[1];
         var third = top_cat[2];
@@ -184,21 +171,7 @@
         var sixth = top_cat[5];
         var seventh = top_cat[6];
  
-        // ['hotels','newamerican','coffee','pizza','mexican']
         function segColor(c){ 
-            var colors = d3.scale.category20().range();
-
-            // var defaultMap = {'mexican':"#05668D", "chinese":"#028090","pizza":"#00A896", 
-            //                   "newamerican": "#02C39A", "italian": "#F0F3BD", "japanese":"#EC96A4",
-            //                   "coffee":"#ACD0c0", "tradamerican":"d09683", "sandwiches":"#ED5752", 
-            //                   "vietnamese":"#92aac7", "hotels":"#4897D8","seafood": "#ebdcb2",
-            //                   "thai": "#ffccac", "delis": "#f5657","burgers":"#b3de81", 
-            //                   "cafes":"#2f496e", "bars":"#755248", "indpak": "#F18D9E", 
-            //                   "sushi": "#F4CC70", "bakeries": "#DE7A22", "breakfast_brunch":"#5D535E",
-            //                   "hotdogs": "#9A9EAB","catering":"#063852" ,"korean": "#D09683", 
-            //                   "grocery": "#C05805", "latin": "#B38867", "foodtrucks":"#CDCDC0",
-            //                   "french":"#626D71", "mediterranean": "#32DFA2", "wine_bars":"#4897D8" };
-
             var defaultMap = {'mexican':"#05668D", 'chinese':"#028090", 'german':"#00A896",
                               'african':"#02C39A", 'fastfood':"#F0F3BD", 'moroccan':"#F18D9E",
                               'spanish':"#ACD0c0", 'russian':"d09683", 'cambodian':"#ED5752",
@@ -219,20 +192,11 @@
                               'colombian':"#EAD4E1", 'cajun':"#B5917B", 'latin':"#93C4EF", 
                               'ukrainian':"#EE7500", 'armenian':"#D69764", 'cuban':"E2E1D9", 
                               'filipino':"#678D4C", 'british':"#C66C98", 'burmese':"#1F5846"}
-            // var cats = Object.keys(defaultMap);
-            // var newMap = [];
-
-            // // for (var i = 0; i < cats.length; i++) {
-            // //     newMap[cats[i]] = colors[i];
-            // // }
-            
-            // return newMap[c];
             return defaultMap[c]
         }
     
     // compute total for each state.
         fData.forEach(function(d){ 
-            // console.log(d)
             d.total=d.freq[first]+d.freq[second]+d.freq[third]+d.freq[fourth]+d.freq[fifth]+d.freq[sixth]+d.freq[seventh];});
         
         // function to handle histogram.
@@ -342,11 +306,9 @@
                 .on("mouseover",mouseover).on("mouseout",mouseout).on("click",click).on("dblclick",dbclick);
 
             function click(d){
-                // poly_num = 1;
-                poly_num = d.data.polygon_num
-                // console.log(d)
-                hide_ids = Object.values(sourceDict[poly_num])
-                // call the update function of histogram with new data.
+                poly_num = d.data.polygon_num;
+                hide_ids = Object.values(sourceDict[poly_num]);
+                // click on the piechart to filter out restaurants in the map
                 for (var sd=0; sd<hide_ids.length; sd++) {
                     map.setLayoutProperty(hide_ids[sd], 'visibility', 'none');
                 }
@@ -354,8 +316,9 @@
                 hG.update(fData.map(function(v){ 
                     return [v.Category,v.freq[d.data.type]];}),segColor(d.data.type));
             }
+
             function dbclick(d){
-                // call the update function of histogram with new data.
+                // doubleclick on the piechart to restore all the restaurants on the map
                 for (var sd=0; sd<sourceIds.length; sd++) {
                     map.setLayoutProperty(sourceIds[sd], 'visibility', 'visible');
                 } 
@@ -456,7 +419,7 @@
     function visualize(datas, top_cat, polygon_num) {
         var freqData=[];
         for (var m=0; m<datas.length; m++) {
-            freqData.push({Category: datas[m][0], freq: datas[m][1], polygon_num: polygon_num})
+            freqData.push({Category: datas[m][0], freq: datas[m][1], polygon_num: polygon_num});
         }
 
         dashboard('#dashboard',freqData);
@@ -469,7 +432,7 @@
     var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v9',
-        center: [-122.431297,37.773972],//[-122.4, 37.8] 
+        center: [-122.431297,37.773972],
         zoom: 12
     });
 
@@ -477,12 +440,8 @@
     var geocoder = new MapboxGeocoder({ accessToken: mapboxgl.accessToken });
     map.addControl(geocoder, 'top-right');
     map.addControl(new mapboxgl.NavigationControl()); //zoom func
-
-    // var d = mapboxgl.Draw(); //add the drawing bar on the top left
-    // d.addTo(map);
     var d = new MapboxDraw();
     map.addControl(d, 'top-left');
-
     var button = document.getElementById('clear'); // clear the drawing
     var linestring = {
         "type": "Feature",
@@ -499,14 +458,13 @@
     var sourceIds = [];
     var sourceDict = new Object;
     function passToServer(event) {
-    
         event.preventDefault(); 
         passToServerNoCB();
     }
 
     function passToServerNoCB() {
-        $('#color_bar').show()
-        $('#dashboard').empty()
+        $('#color_bar').show();
+        $('#dashboard').empty();
         var numCallBack = 1; // 1 database call, 3 apis
         var allDone = [];
         var done = [];
@@ -519,19 +477,15 @@
         sourceDict = {};
         function displayPoints(response, polygon_num){
             if (response.result == "No result") {
-                console.log("no response")
+                console.log("no response");
             } else {
                 datas = response.visualization;
                 top_count = response.top_count;
                 top_cat = response.top_category;
                 visualize(datas, top_cat, polygon_num);
-                // data = response.result[0];
-
-                // console.log(data[0])
-                var data = JSON.parse("[" + response.result + "]")
-
+                var data = JSON.parse("[" + response.result + "]");
                 for (var layer_num = 0; layer_num < data.length ; layer_num++) {
-                    layers_points = data[layer_num]
+                    layers_points = data[layer_num];
                     var points = [];
                     for(var i=0; i<layers_points.length; i++) {
                         // prepare each point in the correct format
@@ -545,8 +499,6 @@
                                         title: "",
                                         description: 
                                             "<a href=\""+layers_points[i]["url"]+"\"target='_blank'>"+layers_points[i]["name"]+"</a><p><img src='"+layers_points[i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+layers_points[i]["review_count"]+"<br>Stars: "+layers_points[i]["stars"]+"<br>Price: " +layers_points[i]["price"]+"<br>Categories: "+layers_points[i]["my_category"]+"<br></p>",
-                                            // Address: "+data[0][i]['address']+"<br>
-                                        // "image": 'https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg',//"'"+data[0][i]['image']+"'",
                                         'review_count': layers_points[i]["review_count"],
                                         'stars': layers_points[i]["stars"],
                                         "icon": "restaurant",
@@ -560,11 +512,11 @@
                     sourceId = sourceId.toString();
                     sourceIds.push(sourceId);
                     if (sourceDict[polygon_num] != undefined) {
-                        sourceDict[polygon_num][layers_points[0]["my_category"]] = sourceId
+                        sourceDict[polygon_num][layers_points[0]["my_category"]] = sourceId;
                     }
                     else {
                         sourceDict[polygon_num] = new Object;
-                        sourceDict[polygon_num][layers_points[0]["my_category"]] = sourceId
+                        sourceDict[polygon_num][layers_points[0]["my_category"]] = sourceId;
                     }
                     map.addLayer({
                         "id": sourceId,
@@ -597,7 +549,6 @@
                                         [4, '#F08080'],
                                         [5, '#E74C3C']
                                     ]
-
                             }
                         }
                     });
@@ -607,7 +558,7 @@
             allDone.push(1);
             if (allDone.length == numCallBack) {
             }
-            done.push(1)
+            done.push(1);
             if (done.length == totalCalls) {
                 $('#getRestaurant').prop('disabled', false);
             }
@@ -624,14 +575,16 @@
         }
         var coordinates_list = [];
         for (var i=0; i < coordinates.length; i++) {
-            coordinates_list.push({"lat": coordinates[i][1], "lng": coordinates[i][0]})
+            coordinates_list.push({"lat": coordinates[i][1], "lng": coordinates[i][0]});
         }
         var parameters = {
             'data': JSON.stringify(coordinates_list)
         };
         // Ajax call to check db
-        $.post("/db.json", parameters, 
-                function (response) {displayPoints(response,j+1)})
+        $.post("/db.json", 
+                parameters, 
+                function (response) {displayPoints(response,j+1)});
+
         for (var k=0; k<numCallBack; k++) {
             var parameter = {
                 'data': JSON.stringify(coordinates_list),
@@ -644,7 +597,7 @@
     }    
         
     for (var j=0; j < d.getAll().features.length; j++) {
-        display(j)
+        display(j);
     }
 }
 
@@ -681,10 +634,6 @@
     function mouseDown() {
         if (!isMouseMove) return;
         isDragging = true;
-        // Set a cursor indicator
-        // canvas.style.cursor = 'grab';
-        // Mouse events
-        // map.on('mousemove', onMove);
         map.once('mouseup', onUp);
     };
 
@@ -693,8 +642,6 @@
         // canvas.style.cursor = '';
         isDragging = false;
         passToServerNoCB();
-        // Unbind mouse events
-        // map.off('mousemove', onMove);
     };
 
     map.on('mousedown', mouseDown, true);
@@ -706,9 +653,6 @@
     $('.mapbox-gl-draw_uncombine').hide();//hiding the uncombine
     $('.mapbox-gl-draw_combine').hide(); //hiding the combine
     $('#color_bar').hide()
-    // mapTooltips.scrollWheelZoom.disable();
-
-    
 
     function tiltMap(){
         map.setPitch(60);
@@ -722,86 +666,90 @@
         map.setPitch(0);
         $('#restore').hide();
     }
-    var cluser_sourceIds = []
-    $("#kmean_clustering").on('click', get_clusters)
-    function get_clusters() {
+    var cluster_sourceIds = []
+    var cluster_points = []
+    function load_cluster() {
         $.post("/kmean.json", "", display_cluster)
-
+        $('#HideKMeanCluster').hide()
         function display_cluster (response) {
             var cluster_data = JSON.parse("[" + response.cluster + "]")
-           
-            console.log(cluster_data)
-            // for (var cluster_num = 0; cluster_num < cluster_data.length ; cluster_num++) {
-            //         cluster_points = cluster_data[cluster_num]
-                    var points = [];
-                    // console.log(cluster_points)
-                    for(var i=0; i<cluster_data[0].length; i++) {
-                        // prepare each point in the correct format
-                        var onePoint = {
-                                    "type": "Feature",
-                                    "geometry": {
-                                    "type": "Point",
-                                    "coordinates": [cluster_data[0][i]["longitude"], cluster_data[0][i]['latitude']]
-                                    },
-                                    "properties": {
-                                            title: "",
-                                            description: 
-                                                "<a href=\""+cluster_data[0][i]["url"]+"\"target='_blank'>"+cluster_data[0][i]["name"]+"</a><p><img src='"+cluster_data[0][i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+cluster_data[0][i]["review_count"]+"<br>Stars: "+cluster_data[0][i]["stars"]+"<br>Price: " +cluster_data[0][i]["price"]+"<br>Categories: "+cluster_data[0][i]["my_category"]+"<br></p>",
-                                            'clusterings': cluster_data[0][i]["clustering"],
-                                    }
-                                    
+            for(var i=0; i<cluster_data[0].length; i++) {
+                // prepare each point in the correct format
+                var onePoint = {
+                            "type": "Feature",
+                            "geometry": {
+                            "type": "Point",
+                            "coordinates": [cluster_data[0][i]["longitude"], cluster_data[0][i]['latitude']]
+                            },
+                            "properties": {
+                                    title: "",
+                                    description: 
+                                        "<a href=\""+cluster_data[0][i]["url"]+"\"target='_blank'>"+cluster_data[0][i]["name"]+"</a><p><img src='"+cluster_data[0][i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+cluster_data[0][i]["review_count"]+"<br>Stars: "+cluster_data[0][i]["stars"]+"<br>Price: " +cluster_data[0][i]["price"]+"<br>Categories: "+cluster_data[0][i]["my_category"]+"<br></p>",
+                                    'clusterings': cluster_data[0][i]["clustering"],
                             }
-                        
-                        // console.log(cluster_data[0][i]["clustering"])
-                        points.push(onePoint);// point every single point to points
+                            
                     }
-                    
-                    var cluser_sourceId = new Date().getTime();
-                    cluser_sourceId = cluser_sourceId.toString();
-                    cluser_sourceIds.push(cluser_sourceId)
-                    map.addLayer({
-                        "id": cluser_sourceId,
-                        "type": "circle",
-                        "source": {
-                            "type": "geojson",
-                            "data": {
-                                "type": "FeatureCollection",
-                                "features": points
-                            }
-                        },
-                        'circle-radius': {
-                            'base': 0.75,
-                            // 'stops': [[12, 2], [22, 180]]s
-                        },
-                        "paint": {
-                            "circle-opacity": 1,
-                            'circle-color': {
-                                property: "clusterings" ,
-                                type: 'categorical',
-                                stops: [
-                                        ["0",'#F1C40F'],
-                                        ["1",'#884EA0'],
-                                        ["2",'#2471A3'],
-                                        ["3", '#17A589'],
-                                        ["4", '#C0392B'],
-                                        // ["5",'#E67E22'],
-                                        // ["6",'#707B7C'],
-                                        // ["7",'#2E4053'],
-                                        // ["8", '#EEAA7B'],
-                                        // ["9", '#A239CA']
-                                    ]
+                cluster_points.push(onePoint);// point every single point to points
+            }
+        }
 
-                            }
+    }
+    load_cluster()
+    function get_clusters() {
+        $('#ViewKMeanCluster').hide()
+        $('#HideKMeanCluster').show()
+        if (cluster_sourceIds.length == 0) {
+            var cluster_sourceId = new Date().getTime();
+            cluster_sourceId = cluster_sourceId.toString();
+            cluster_sourceIds.push(cluster_sourceId)
+            map.addLayer({
+                "id": cluster_sourceId,
+                "type": "circle",
+                "source": {
+                    "type": "geojson",
+                    "data": {
+                        "type": "FeatureCollection",
+                        "features": cluster_points
+                    }
+                },
+                'circle-radius': {
+                    'base': 0.75
+                },
+                "paint": {
+                    "circle-opacity": 1,
+                    'circle-color': {
+                        property: "clusterings" ,
+                        type: 'categorical',
+                        stops: [
+                                ["0",'#F1C40F'],
+                                ["1",'#884EA0'],
+                                ["2",'#2471A3'],
+                                ["3", '#17A589'],
+                                ["4", '#C0392B'],
+                                // ["5",'#E67E22'],
+                                // ["6",'#707B7C'],
+                                // ["7",'#2E4053'],
+                                // ["8", '#EEAA7B'],
+                                // ["9", '#A239CA']
+                            ]
                         }
-                    });
-
-                 
-            // }
-
+                    }
+                }
+            );
+        }
+        else {
+            map.setLayoutProperty(cluster_sourceIds[0], 'visibility', 'visible');
         }
     }
+
+    function hide_clusters() {
+        $('#HideKMeanCluster').hide();
+        $('#ViewKMeanCluster').show();
+        map.setLayoutProperty(cluster_sourceIds[0], 'visibility', 'none');
+    }
+
     map.on('mousemove', function (e) {
-        var features = map.queryRenderedFeatures(e.point, { layers: cluser_sourceIds });
+        var features = map.queryRenderedFeatures(e.point, { layers: cluster_sourceIds });
 
         if (!features.length) {
             return;
