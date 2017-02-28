@@ -17,6 +17,7 @@ def inside_polygon_math(py, px, x, y):
     np.logical_and(l, idx, out=idx)
     r = (px[1:]+(y-py[1:])/(py[:-1]-py[1:])*(px[:-1]-px[1:])<x)
     r[np.negative(idx)] = bool(np.logical_xor.identity)
+    # print index[np.logical_xor.reduce(r, axis=1)]
     return index[np.logical_xor.reduce(r, axis=1)]
 
 """Slow math"""
