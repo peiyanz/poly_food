@@ -11,65 +11,25 @@
     <!-- import mapbox-gl -->
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css' rel='stylesheet' />
-    <style>
-        body { margin:0; padding:0; height: 1500px; }
-    </style>
-</head>
-<body>
-    <script>
-    var looper;
-    var degrees = 3;
-    function rotateAnimation(el, speed) {
-        var cog1 = document.getElementById(el);
-        // if (navigator.userAgent.match("chrome")){
-        //     cog1.style.WebkitTransform = "rotate("+degrees+"deg)";
-        // }
-        cog1.style.transform = "rotate("+degrees+"deg)"
-        looper = setTimeout('rotateAnimation(\''+el+'\','+speed+')',speed);
-        degrees++;
-        if (degrees > 359) {
-            degrees = 1;
-        }
-        // document.getElementById("status").inn
-    }
-    </script>
-    <!-- <div id ="logo">
-        <img id = "logo" src="static/logo.jpg" alt="poly food">
-        <script>rotateAnimation('logo',20);</script>
-    </div> -->
-    <div class = "row" id="poly_div">
-        <img id = "poly_food" src="static/poly_food.png" alt="poly food">
-    </div>
-
-   <!--  <div id="sideNav" class="sideNav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-    </div>
-    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span> -->
-
-    <!-- <script>
-    function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-    }
-
-    function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-    }
-    </script> -->
-
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.js'></script>
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.0.1/mapbox-gl-geocoder.css' type='text/css' />
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    
+</head>
+<body>
+   <!--  <div class = "row" id="poly_div">
+        <img id = "poly_food" src="static/breakfast.jpg" alt="poly food">
+    </div> -->
 
-    <div id='map'>
-        <input type=button name="clear" value="Clear" id="clear">
-        <button id="ViewKMeanCluster" onclick="get_clusters()">View KMean Cluster</button>
-        <button id="HideKMeanCluster" onclick="hide_clusters()">Hide KMean Cluster</button>
-        <div class="pin-topleft pad1 modal tilted">
-            <button id="tilt" onclick="tiltMap()">Tilt Map</button>
-            <button id="restore" onclick="tiltMap()">Flat Map</button>
-        </div>
+    <div class = "row" id='map'>
+        <!-- <input type=button name="clear" value="Clear" id="clear"> -->
+        <button type="button" class="btn btn-primary" id = "clear">Clear</button>
+        <button type="button" class="btn btn-primary" id="ViewKMeanCluster" onclick="get_clusters()">View KMean Cluster</button>
+        <button type="button" class="btn btn-primary" id="HideKMeanCluster" onclick="hide_clusters()">Hide KMean Cluster</button>
+        <!-- <div class="pin-topleft pad1 modal tilted"> -->
+        <button type="button" class="btn btn-primary" id="tilt" onclick="tiltMap()">Tilt Map</button>
+        <button type="button" class="btn btn-primary" id="restore" onclick="tiltMap()">Flat Map</button>
+        <!-- </div> -->
         <div id='color_bar' class='color_bar'>
             <h4>Restaurant Stars</h4>
             <div><span style='background-color: #1B1D84'></span>One Star</div>
@@ -78,6 +38,8 @@
             <div><span style='background-color: #F08080'></span>Four Stars</div>
             <div><span style='background-color: #E74C3C'></span>Five Stars</div>
         </div>
+    </div>
+    <div class = "row" id='footer'>
     </div>
     <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
     

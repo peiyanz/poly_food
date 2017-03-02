@@ -1,28 +1,33 @@
 
-body { margin:0; padding:0; }
-#map { /*position:relative; */
-      /*top:50%; bottom:0%; */
-      width:100%; 
-      left:0%; 
-      height: 40%;
-    }
+body { margin:0; 
+       padding:0;
+       height: 1000px; 
+     }
 
+.btn-primary.focus {
+  color: #fff;
+
+}
 #poly_food {
-      /*position:relative; */
-      /*top: 0%;*/
-      /*left: 0%;*/
-      /*bottom: 70%;*/
-      width: 100%;
-      /*height: auto;*/
-      /*height: 50%;*/
-      /*z-index: 1;*/
+      width:100%; 
+      height: 90%;
   }
-#logo {
-  width: 40%;}
 
 #poly_div {
-  /*position: absolute;*/
-  height:45%;
+    
+    left: 1%;
+}
+#map { 
+      /*position:absolute; */
+      /*top:50%; */
+      /*bottom:10%; */
+      width:100%; 
+      left: 2%;
+      height: 65%;
+      bottom: 0%;
+    }
+#footer {
+  height: 5%;
 }
 
 .sidenav {
@@ -78,7 +83,7 @@ body { margin:0; padding:0; }
     position: relative;
    /* top: 90%;*/
     width:90%;
-    left: 15%;
+    left: 8%;
     z-index: 1;
 }
 
@@ -91,14 +96,18 @@ body { margin:0; padding:0; }
     top: 93%;
     left: 45%;
     z-index: 1;
+    background-color: #CAD2D3;
+    border-color: #CAD2D3;
 
 }
 
 #clear {
     position: absolute;
     top: 93%;
-    left: 35%;
+    left: 30%;
     z-index: 1;
+    background-color: #CAD2D3;
+    border-color: #CAD2D3;
 }
 
 #tilt {
@@ -106,21 +115,27 @@ body { margin:0; padding:0; }
     top: 93%;
     left: 45%;
     z-index: 1;
+    background-color: #CAD2D3;
+    border-color: #CAD2D3;
 
 }
 
 #ViewKMeanCluster{
     position:absolute; 
     top: 93%;
-    left: 55%;
+    left: 60%;
     z-index: 1;
+    background-color: #CAD2D3;
+    border-color: #CAD2D3;
 }
 
 #HideKMeanCluster{
     position:absolute; 
     top: 93%;
-    left: 55%;
+    left: 60%;
     z-index: 1;
+    background-color: #CAD2D3;
+    border-color: #CAD2D3;
 
 } 
 
