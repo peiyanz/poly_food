@@ -1,3 +1,66 @@
+/*html, body {
+  background: #E59866; ##85929EE59866#E59866; #F1948A,D9853B;#45B39D#19f6e8;;
+  /*height: 100%;*/
+  /*overflow: hidden;*/
+  /*text-align: center;*/
+/*}*/
+html, body {
+  background: #cedae1;
+  height: 100%;
+  /*overflow: hidden;*/
+  /*text-align: center;*/
+  
+}
+
+.svg-wrapper {
+  height: 60px;
+    margin: 0 auto;
+  position: absolute;
+  top: 55%;
+  transform: translateY(-50%);
+  width: 320px;
+  left: 37%;
+  /*text-align: center;*/
+}
+
+.shape {
+  fill: transparent;
+  stroke-dasharray: 140 540;
+  stroke-dashoffset: -474;
+  stroke-width: 8px;
+  stroke: #19f6e8;
+  text-align: center;
+}
+
+.text {
+  color: #fff;
+  font-family: 'Roboto Condensed';
+  font-size: 30px;
+  letter-spacing: 8px;
+  line-height: 32px;
+  position: absolute;
+  top: 20%;
+  left: 24%;
+  text-align: center;
+}
+
+@keyframes draw {
+  0% {
+    stroke-dasharray: 140 540;
+    stroke-dashoffset: -474;
+    stroke-width: 8px;
+  }
+  100% {
+    stroke-dasharray: 760;
+    stroke-dashoffset: 0;
+    stroke-width: 2px;
+  }
+}
+
+.svg-wrapper:hover .shape {
+  -webkit-animation: 0.5s draw linear forwards;
+  animation: 0.5s draw linear forwards;
+}
 
 body { margin:0; 
        padding:0;
@@ -15,14 +78,22 @@ body { margin:0;
 
 #poly_div {
     
-    left: 1%;
+    left: 0%;
+    /*height: 100vh;*/
+
+}
+#space {
+  height: 3%;
 }
 #map { 
       /*position:absolute; */
       /*top:50%; */
       /*bottom:10%; */
       width:100%; 
-      left: 2%;
+      /*left: 1%;*/
+     /* right: 5%;*/
+     /* right: 30%;*/
+      left: 1.5%;
       height: 65%;
       bottom: 0%;
     }
@@ -83,8 +154,9 @@ body { margin:0;
     position: relative;
    /* top: 90%;*/
     width:90%;
-    left: 8%;
+    /*left: 8%;*/
     z-index: 1;
+    text-align: center;
 }
 
 #name{
