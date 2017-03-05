@@ -4,25 +4,41 @@
   /*overflow: hidden;*/
   /*text-align: center;*/
 /*}*/
-html, body {
-  background: #cedae1;
-  height: 100%;
-  /*overflow: hidden;*/
-  /*text-align: center;*/
-  
+@media screen and (min-width: 1200px) {
+  .text {
+    /*color: #fff;
+    font-family: 'Roboto Condensed';*/
+    font-size: 10px;
+    letter-spacing: 8px;
+    line-height: 32px;
+   /* position: absolute;
+    top: 10%;
+    left: 24%;
+    text-align: center;*/
+  }
 }
 
-.svg-wrapper {
+/*html, body {
+  background: #6AAEED;
+  height: 100%;
+  overflow: hidden;
+  text-align: center;
+  
+}*/
+.mapboxgl-popup {
+    color: #098BB7; 
+}
+/*.svg-wrapper {
   height: 60px;
     margin: 0 auto;
   position: absolute;
-  top: 55%;
+  top: 5%;
   transform: translateY(-50%);
   width: 320px;
   left: 37%;
   /*text-align: center;*/
-}
-
+/*}*/
+/*
 .shape {
   fill: transparent;
   stroke-dasharray: 140 540;
@@ -30,18 +46,18 @@ html, body {
   stroke-width: 8px;
   stroke: #19f6e8;
   text-align: center;
-}
+}*/
 
-.text {
-  color: #fff;
-  font-family: 'Roboto Condensed';
-  font-size: 30px;
-  letter-spacing: 8px;
-  line-height: 32px;
-  position: absolute;
-  top: 20%;
-  left: 24%;
-  text-align: center;
+h2 {
+  color: #E59866;
+  font-family: 'Chalkduster';
+  font-size: 38px;
+  /*letter-spacing: 8px;
+  line-height: 28px;*/
+  position: relative;
+  /*top: 15%;*/
+  left: 3%;
+  /*text-align: center;*/
 }
 
 @keyframes draw {
@@ -71,15 +87,19 @@ body { margin:0;
   color: #fff;
 
 }
-#poly_food {
-      width:100%; 
-      height: 90%;
-  }
+#restaurant {
+  width:100%;
+}
+/*#poly_food {
+      width:35%; 
+      height: 35%;
+
+  }*/
 
 #poly_div {
-    
-    left: 0%;
-    /*height: 100vh;*/
+    /*background-color: #7BB7F0;*/
+    position: relative;
+    height: 90vh;
 
 }
 #space {
@@ -94,7 +114,7 @@ body { margin:0;
      /* right: 5%;*/
      /* right: 30%;*/
       left: 1.5%;
-      height: 65%;
+      height: 100vh;
       bottom: 0%;
     }
 #footer {

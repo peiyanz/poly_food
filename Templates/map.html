@@ -17,33 +17,15 @@
     
 </head>
 <body>
-    <div class = "row" id="poly_div">
-        <br>
-        <br>
-        <!-- <img id = "poly_food" src="static/poly_food.png" alt="poly food"> -->
-        <div class="svg-wrapper">
-          <svg height="60" width="320" xmlns="http://www.w3.org/2000/svg">
-            <rect class="shape" height="60" width="320" />
-          </svg>
-           <div class="text">PolyFood</div>
-        </div>
-        <img id = "poly_food" src="static/poly_food.png" alt="poly food">
-        <br>
-        <br>
-
- <!--        <div class="svg-wrapper">
-          <svg height="60" width="320" xmlns="http://www.w3.org/2000/svg">
-            <rect class="shape" height="60" width="320" />
-          </svg>
-           <div class="text">PolyFood</div>
-        </div> -->
+    <div class="row" id="poly_div">
+        <h2>POLYFOOD</h2>
+    <!-- <center><img id = "poly_food" src="static/chery.png" alt="poly food" ></center> -->
+        <center><img id = "restaurant" src="static/rest.jpg"></center>
         <br>
         <br>
     </div>
-  
 
     <div class = "row" id='map'>
-        <!-- <input type=button name="clear" value="Clear" id="clear"> -->
         <button type="button" class="btn btn-primary" id = "clear">Clear</button>
         <button type="button" class="btn btn-primary" id="ViewKMeanCluster" onclick="get_clusters()">View KMean Cluster</button>
         <button type="button" class="btn btn-primary" id="HideKMeanCluster" onclick="hide_clusters()">Hide KMean Cluster</button>
@@ -441,7 +423,7 @@
                                     "properties": {
                                         title: "",
                                         description: 
-                                            "<a href=\""+layers_points[i]["url"]+"\"target='_blank'>"+layers_points[i]["name"]+"</a><p><img src='"+layers_points[i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+layers_points[i]["review_count"]+"<br>Stars: "+layers_points[i]["stars"]+"<br>Price: " +layers_points[i]["price"]+"<br>Categories: "+layers_points[i]["my_category"]+"<br></p>",
+                                            "<a href=\""+layers_points[i]["url"]+"\"target='_blank'>"+layers_points[i]["name"]+"</a><p><center><img src='"+layers_points[i]["image"]+"'style='width:120px;height:80px;'></center><br>Review Counts: "+layers_points[i]["review_count"]+"<br>Stars: "+layers_points[i]["stars"]+"<br>Price: " +layers_points[i]["price"]+"<br>Categories: "+layers_points[i]["my_category"]+"<br></p>",
                                         'review_count': layers_points[i]["review_count"],
                                         'stars': layers_points[i]["stars"],
                                         "icon": "restaurant",
@@ -629,7 +611,7 @@
                             "properties": {
                                     title: "",
                                     description: 
-                                        "<a href=\""+cluster_data[0][i]["url"]+"\"target='_blank'>"+cluster_data[0][i]["name"]+"</a><p><img src='"+cluster_data[0][i]["image"]+"'style='width:50px;height:50px;'><br>Review Counts: "+cluster_data[0][i]["review_count"]+"<br>Stars: "+cluster_data[0][i]["stars"]+"<br>Price: " +cluster_data[0][i]["price"]+"<br>Categories: "+cluster_data[0][i]["my_category"]+"<br></p>",
+                                        "<a href=\""+cluster_data[0][i]["url"]+"\"target='_blank'>"+cluster_data[0][i]["name"]+"</a><p><img src='"+cluster_data[0][i]["image"]+"'style='width:100px;height:80px;'><br>Review Counts: "+cluster_data[0][i]["review_count"]+"<br>Stars: "+cluster_data[0][i]["stars"]+"<br>Price: " +cluster_data[0][i]["price"]+"<br>Categories: "+cluster_data[0][i]["my_category"]+"<br></p>",
                                     'clusterings': cluster_data[0][i]["clustering"],
                                     'review_count': cluster_data[0][i]["review_count"],
                             }
