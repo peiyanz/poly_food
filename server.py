@@ -221,7 +221,7 @@ def kmean():
 
 
 if __name__ == "__main__":
-    app.debug = True
+    app.debug = False
     # Use the DebugToolbar
     DebugToolbarExtension(app)
     app.run(port=5000, host='127.0.0.1')

@@ -6,7 +6,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="static/style.css" rel="stylesheet">
     <meta charset='utf-8' />
-    <title>poly_food</title>
+    <center><title>poly_food</title></center>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <!-- import mapbox-gl -->
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'></script>
@@ -18,13 +18,15 @@
 </head>
 <body>
     <div class="row" id="poly_div">
-        <h2>POLYFOOD</h2>
-    <!-- <center><img id = "poly_food" src="static/chery.png" alt="poly food" ></center> -->
-        <center><img id = "restaurant" src="static/rest.jpg"></center>
-        <br>
+        
+        <a href="#map"><h2>POLYFOOD</h2></a>
+        <h3>- I can’t buy happiness but I can buy a cupcake, and it’s kind of a same thing.</h3>
+        <center><img id = "restaurant" src="static/tp.jpg"></center>
+    </div>
+    <div class="row">
+        <h4>Food Lover</h4>
         <br>
     </div>
-
     <div class = "row" id='map'>
         <button type="button" class="btn btn-primary" id = "clear">Clear</button>
         <button type="button" class="btn btn-primary" id="ViewKMeanCluster" onclick="get_clusters()">View KMean Cluster</button>
@@ -53,7 +55,7 @@
     <style>
     path {  stroke: #fff; }
     path:hover {  opacity:0.9; }
-    rect:hover {  fill:#2c7873; }
+    rect:hover {  fill:#66a5ad; }
     .axis {  font: 10px sans-serif; }
     .legend tr{    border-bottom:1px solid grey; }
     .legend tr:first-child{    border-top:1px solid grey; }
@@ -82,12 +84,12 @@
     }
     </style>
 
-    <div id='dashboard'></div>
+    <center><div id='dashboard'></div></center>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script>
     $('#restore').hide()
     function dashboard(id, fData, top_cat){
-        var barColor = '#66a5ad';
+        var barColor = '#E59866'; //'#66a5ad';
         var first = top_cat[0];
         var second = top_cat[1];
         var third = top_cat[2];

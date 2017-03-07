@@ -28,25 +28,6 @@
 .mapboxgl-popup {
     color: #098BB7; 
 }
-/*.svg-wrapper {
-  height: 60px;
-    margin: 0 auto;
-  position: absolute;
-  top: 5%;
-  transform: translateY(-50%);
-  width: 320px;
-  left: 37%;
-  /*text-align: center;*/
-/*}*/
-/*
-.shape {
-  fill: transparent;
-  stroke-dasharray: 140 540;
-  stroke-dashoffset: -474;
-  stroke-width: 8px;
-  stroke: #19f6e8;
-  text-align: center;
-}*/
 
 h2 {
   color: #E59866;
@@ -54,12 +35,24 @@ h2 {
   font-size: 38px;
   /*letter-spacing: 8px;
   line-height: 28px;*/
-  position: relative;
+  top: 5%;
+  position: absolute;
   /*top: 15%;*/
-  left: 3%;
+  left: 10%;
   /*text-align: center;*/
 }
-
+h3 {
+  color: #E59866;
+  font-family: 'Chalkduster';
+  font-size: 20px;
+  /*letter-spacing: 8px;
+  line-height: 28px;*/
+  top: 15%;
+  position: absolute;
+  /*top: 15%;*/
+  left: 15%;
+  /*text-align: center;*/
+}
 @keyframes draw {
   0% {
     stroke-dasharray: 140 540;
@@ -97,9 +90,10 @@ body { margin:0;
   }*/
 
 #poly_div {
-    /*background-color: #7BB7F0;*/
+    /*background-color: #E59866;*/
     position: relative;
     height: 90vh;
+
 
 }
 #space {
@@ -114,7 +108,7 @@ body { margin:0;
      /* right: 5%;*/
      /* right: 30%;*/
       left: 1.5%;
-      height: 100vh;
+      height: 94vh;
       bottom: 0%;
     }
 #footer {
@@ -188,8 +182,8 @@ body { margin:0;
     top: 93%;
     left: 45%;
     z-index: 1;
-    background-color: #CAD2D3;
-    border-color: #CAD2D3;
+    background-color: #66a5ad;
+    border-color: #E59866;
 
 }
 
@@ -198,8 +192,8 @@ body { margin:0;
     top: 93%;
     left: 30%;
     z-index: 1;
-    background-color: #CAD2D3;
-    border-color: #CAD2D3;
+    background-color: #66a5ad;
+    border-color: #E59866;
 }
 
 #tilt {
@@ -207,8 +201,8 @@ body { margin:0;
     top: 93%;
     left: 45%;
     z-index: 1;
-    background-color: #CAD2D3;
-    border-color: #CAD2D3;
+    background-color: #66a5ad;
+    border-color: #E59866;
 
 }
 
@@ -217,8 +211,8 @@ body { margin:0;
     top: 93%;
     left: 60%;
     z-index: 1;
-    background-color: #CAD2D3;
-    border-color: #CAD2D3;
+    background-color: #66a5ad;
+    border-color: #E59866;
 }
 
 #HideKMeanCluster{
@@ -226,8 +220,8 @@ body { margin:0;
     top: 93%;
     left: 60%;
     z-index: 1;
-    background-color: #CAD2D3;
-    border-color: #CAD2D3;
+    background-color: #66a5ad;
+    border-color: #E59866;
 
 } 
 
