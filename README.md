@@ -21,7 +21,7 @@ Yelp, Mapbox
 ## <a name="features"></a>Features
 1.When the user is done drawing, it will automatically return all the restaurant info from both my database and the yelp api. Different sizes of circles represent the number of reviews for that restaurant and different colors represent the review stars of that restaurant. 
 So, for example, big red circle means this restaurant is very popular and has good qualities. 
-
+![](https://github.com/peiyan08/poly_food/readme_img/draw_polygon.gif?raw=true "Landing Page")
 
 
 ## <a name="challenges"></a>Challenges
