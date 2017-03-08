@@ -27,11 +27,16 @@ So, for example, big red circle means this restaurant is very popular and has go
 2.The user could view a bar chart and a pie chart which are representing the distribution on the price range top 7 categories restaurants within that region. By hovering over to the specific price or category, it will show the distribution of the other feature. If the user wants to see a specific category restaurant on the map, they can click on the pie chart, and the circles on the map will be filtered to be only that category. When the user double clicks on the pie chart again, it brings back all the restaurants.
 ![](https://github.com/peiyan08/poly_food/blob/master/readme_img/bar_pie.gif?raw=true "View Bar/Pie chart")
 
+3.Users can resize or move the polygon around, which will generate new data immediately.
+![](https://github.com/peiyan08/poly_food/blob/master/readme_img/edit_polygon.gif?raw=true "edit Polygon")
+
+4.Started working on using machine learning algorithm to cluster all the restaurants. For example in the map, i have got 4 clusters and try to look for insights on how different clusters are distributed geographically to try to find interesting insights. This is just one area that I would like to dig deeper into for the future.
+![](https://github.com/peiyan08/poly_food/blob/master/readme_img/clusters.gif?raw=true "Clustering Restaurants")
+
 
 ## <a name="challenges"></a>Challenges
 1. Determining if a point exits in a polygon, the strightforward mathmatical python implementation takes 5 seconds to determine 140,000 points, while the optimized numpy solution cut it down ot 0.1 second.
 2. Utilizing multi-threading to send a batch call of 20 Yelp API(offset 50*n every time) calls to retrieve up to 1000 restaurants results per batch call. It allows more results within a faster turn around time.
-
 3.Setting up a chain of listerners to auto detect user behaviors, such as automatically trigger showing restaurants within that polygon when people finish draw/resize/move.
 
 
