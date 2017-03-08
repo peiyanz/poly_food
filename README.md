@@ -2,7 +2,7 @@
 
 #####Project Description:
 Polyfood allows users to quickly identify the category, price range, quality and popularity of the restaurants within a custom defined polygon region on the map. Users can draw/edit/move multiple polygons directly on a map, the app then displays restaurants within each polygon area and filter out restaurants based on type of food, restaurant's rating, and many other filters. It also allows the user to compare the results by interacting with D3 built animated graphs.
-![](https://github.com/peiyan08/poly_food/readme_img/landing_page.png?raw=true "Landing Page")
+![](https://github.com/peiyan08/poly_food/blob/master/readme_img/landing_page.png?raw=true "Landing Page")
 
 
 ## Table of Contents
@@ -21,7 +21,11 @@ Yelp, Mapbox
 ## <a name="features"></a>Features
 1.When the user is done drawing, it will automatically return all the restaurant info from both my database and the yelp api. Different sizes of circles represent the number of reviews for that restaurant and different colors represent the review stars of that restaurant. 
 So, for example, big red circle means this restaurant is very popular and has good qualities. 
-![](https://github.com/peiyan08/poly_food/readme_img/draw_polygon.gif?raw=true "Landing Page")
+![](https://github.com/peiyan08/poly_food/blob/master/readme_img/draw_polygon.gif?raw=true "Draw Polygon")
+
+
+2.The user could view a bar chart and a pie chart which are representing the distribution on the price range top 7 categories restaurants within that region. By hovering over to the specific price or category, it will show the distribution of the other feature. If the user wants to see a specific category restaurant on the map, they can click on the pie chart, and the circles on the map will be filtered to be only that category. When the user double clicks on the pie chart again, it brings back all the restaurants.
+![](https://github.com/peiyan08/poly_food/blob/master/readme_img/bar_pie.gif?raw=true "View Bar/Pie chart")
 
 
 ## <a name="challenges"></a>Challenges
