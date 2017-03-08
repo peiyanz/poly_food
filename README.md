@@ -37,7 +37,7 @@ So, for example, big red circle means this restaurant is very popular and has go
 ## <a name="challenges"></a>Challenges
 1. Determining if a point exits in a polygon, the strightforward mathmatical python implementation takes 5 seconds to determine 140,000 points, while the optimized numpy solution cut it down ot 0.1 second.
 2. Utilizing multi-threading to send a batch call of 20 Yelp API(offset 50*n every time) calls to retrieve up to 1000 restaurants results per batch call. It allows more results within a faster turn around time.
-3.Setting up a chain of listerners to auto detect user behaviors, such as automatically trigger showing restaurants within that polygon when people finish draw/resize/move.
+3. Setting up a chain of listerners to auto detect user behaviors, such as automatically trigger showing restaurants within that polygon when people finish draw/resize/move.
 
 
 ## <a name="aboutme"></a>About Me
