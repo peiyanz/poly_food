@@ -12,6 +12,7 @@ from collections import OrderedDict
 from KMean_Cluster import kmean_clusters
 
 
+
 app = Flask(__name__) 
 
 app.secret_key = APP_SECRETE
@@ -130,7 +131,7 @@ def check_db():
 
     engine = create_engine('postgresql://peiyan:peiyan@localhost:8000/peiyan')
     db_points = pd.read_sql_query('SELECT * FROM restaurant',con=engine)
-
+    # db_points = pd.read_csv("restaurants.csv")
     info = is_in_polygon(polyY, polyX, db_points)
     
     top_count = info['review_count'].quantile(q=0.98)
@@ -224,5 +225,5 @@ if __name__ == "__main__":
     app.debug = False
     # Use the DebugToolbar
     DebugToolbarExtension(app)
-    app.run(port=5000, host='127.0.0.1')
+    app.run(port=8080, host='127.0.0.1')
 
