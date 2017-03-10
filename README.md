@@ -23,13 +23,13 @@ Yelp, Mapbox
 ![](https://github.com/peiyan08/poly_food/blob/master/readme_img/draw_polygon.gif?raw=true "Draw Polygon")
 
 
-2.The user could view a bar chart and a pie chart which are representing the distribution on the price range top 7 categories restaurants within that region. By hovering over to the specific price or category, it will show the distribution of the other feature. If the user wants to see a specific category restaurant on the map, they can click on the pie chart, and the circles on the map will be filtered to be only that category. When the user double clicks on the pie chart again, it brings back all the restaurants.
+2. The user could view a bar chart and a pie chart which are representing the distribution on the price range top 7 categories restaurants within that region. By hovering over to the specific price or category, it will show the distribution of the other feature. If the user wants to see a specific category restaurant on the map, they can click on the pie chart, and the circles on the map will be filtered to be only that category. When the user double clicks on the pie chart again, it brings back all the restaurants.
 ![](https://github.com/peiyan08/poly_food/blob/master/readme_img/bar_pie.gif?raw=true "View Bar/Pie chart")
 
-3.Users can resize or move the polygon around, which will generate new data immediately.
+3. Users can resize or move the polygon around, which will generate new data immediately.
 ![](https://github.com/peiyan08/poly_food/blob/master/readme_img/edit_polygon.gif?raw=true "edit Polygon")
 
-4.Started using machine learning algorithm to cluster all the restaurants. For example, in the map, I have 4 clusters and try to look for insights on how different clusters are distributed geographically to try to find interesting insights. This is just one area that I would like to dig deeper in the future.
+4. Started using machine learning algorithm to cluster all the restaurants. For example, in the map, I have 4 clusters and try to look for insights on how different clusters are distributed geographically to try to find interesting insights. This is just one area that I would like to dig deeper in the future.
 ![](https://github.com/peiyan08/poly_food/blob/master/readme_img/clusters.gif?raw=true "Clustering Restaurants")
 
 
