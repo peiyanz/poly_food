@@ -19,8 +19,7 @@ Python, Javascript, D3, Flask, Pandas, Numpy, HTML, CSS,  SQLAlchemy
 Yelp, Mapbox
 
 ## <a name="features"></a>Features
-1.When the user is done drawing, it will automatically return all the restaurant info from both my database and the yelp api. Different sizes of circles represent the number of reviews for that restaurant and different colors represent the review stars of that restaurant. 
-So, for example, big red circle means this restaurant is very popular and has good qualities. 
+1. When the user is done drawing, it will automatically return all the restaurant info from both my database and the yelp API. Different size of dots represent the number of reviews for that restaurant and different colors represent the review stars of that restaurant.So, a large red dot means this restaurant is very popular and has good qualities. 
 ![](https://github.com/peiyan08/poly_food/blob/master/readme_img/draw_polygon.gif?raw=true "Draw Polygon")
 
 
@@ -30,14 +29,14 @@ So, for example, big red circle means this restaurant is very popular and has go
 3.Users can resize or move the polygon around, which will generate new data immediately.
 ![](https://github.com/peiyan08/poly_food/blob/master/readme_img/edit_polygon.gif?raw=true "edit Polygon")
 
-4.Started working on using machine learning algorithm to cluster all the restaurants. For example in the map, i have got 4 clusters and try to look for insights on how different clusters are distributed geographically to try to find interesting insights. This is just one area that I would like to dig deeper into for the future.
+4.Started using machine learning algorithm to cluster all the restaurants. For example, in the map, I have 4 clusters and try to look for insights on how different clusters are distributed geographically to try to find interesting insights. This is just one area that I would like to dig deeper in the future.
 ![](https://github.com/peiyan08/poly_food/blob/master/readme_img/clusters.gif?raw=true "Clustering Restaurants")
 
 
 ## <a name="challenges"></a>Challenges
-1. Determining if a point exits in a polygon, the strightforward mathmatical python implementation takes 5 seconds to determine 140,000 points, while the optimized numpy solution cut it down ot 0.1 second.
+1. Determining if a point exits in a polygon, the straightforward mathematical python implementation takes 5 seconds to determine 140,000 points, while the optimized numpy solution cut it down ot 0.1 second.
 2. Utilizing multi-threading to send a batch call of 20 Yelp API(offset 50*n every time) calls to retrieve up to 1000 restaurants results per batch call. It allows more results within a faster turn around time.
-3. Setting up a chain of listerners to auto detect user behaviors, such as automatically trigger showing restaurants within that polygon when people finish draw/resize/move.
+3. Setting up a chain of Listeners to automatic trigger user behaviors, such as automatically trigger showing restaurants within that polygon when people finish draw/resize/move.
 
 
 ## <a name="aboutme"></a>About Me
