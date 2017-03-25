@@ -129,9 +129,9 @@ def check_db():
     polyY = [float(lat.get('lat')) for lat in data]
     polyX = [float(lng.get('lng')) for lng in data]
 
-    engine = create_engine('postgresql://peiyan:peiyan@localhost:8000/peiyan')
-    db_points = pd.read_sql_query('SELECT * FROM restaurant',con=engine)
-    # db_points = pd.read_csv("restaurants.csv")
+    # engine = create_engine('postgresql://peiyan:peiyan@localhost:8000/peiyan')
+    # db_points = pd.read_sql_query('SELECT * FROM restaurant',con=engine)
+    db_points = pd.read_csv("restaurants.csv")
     info = is_in_polygon(polyY, polyX, db_points)
     
     top_count = info['review_count'].quantile(q=0.98)

@@ -57,20 +57,20 @@ def call_yelp(latitude, longitude, radius, offset):
         
 
         # Importing the existing_data in the memory
-        engine = create_engine('postgresql://peiyan:peiyan@localhost:8000/peiyan')
-        db_points = pd.read_sql_query('SELECT * FROM restaurant',con=engine)
-        # db_points = pd.read_csv("restaurants.csv")
+        # engine = create_engine('postgresql://peiyan:peiyan@localhost:8000/peiyan')
+        # db_points = pd.read_sql_query('SELECT * FROM restaurant',con=engine)
+        db_points = pd.read_csv("restaurants.csv")
 
         # grab the new data from the api calls that do not exit in the exiting database
         new_data = rest_info[~rest_info["id"].isin(db_points["id"].tolist())]
         new_data['my_category'] = new_data['category'].map(lambda x: category_dict.get(x, 'other'))
         new_db = new_data[new_data['my_category'] != 'other']
         data = new_db.set_index("id")
-        try:
-            # write new data into database
-            data.to_sql('restaurant', engine, if_exists='append')  
-        except Exception as err:
-            print err                  
+        # try:
+        #     # write new data into database
+        #     data.to_sql('restaurant', engine, if_exists='append')  
+        # except Exception as err:
+        #     print err                  
         
         return new_data
 
