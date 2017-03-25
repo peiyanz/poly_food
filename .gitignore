@@ -1,5 +1,4 @@
 poly/
 *.pyc
-constant.py
 .DS_Store
 static/test.py
